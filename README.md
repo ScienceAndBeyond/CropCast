@@ -75,10 +75,8 @@ python src/ml.py
 
 ## Notes
 
-- We used spatial cross-validation (GroupKFold by county) to avoid data leakage
-- EVI worked better than NDVI for most crops
-- Code could be cleaner but it works.
-- Work in progress to download data more efficiently through  sources
+- Code could be cleaner, but it works. More work is needed to clean up
+- Work in progress to download data more efficiently through  cloud sources
 
 ## Authors
 
