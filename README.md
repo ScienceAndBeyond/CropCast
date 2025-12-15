@@ -88,9 +88,9 @@ python src/ml.py
 
 ## Poster
 
-Presented at AGU 2025, New Orleans (GC13F-0713).
+AGU 2025, New Orleans poster presentation (GC13F-0713).
 
-[![Poster](poster/thumbnail.png)](poster/AGU2025_CropCast_Poster.pdf)
+📄 [View Poster (PDF)](poster/AGU2025_CropCast_Poster.pdf)
 
 ---
 
