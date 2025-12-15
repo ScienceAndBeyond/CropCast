@@ -23,7 +23,7 @@ We used 4 data sources covering 734 counties across 11 states from 2010-2024:
 | Crop yields | USDA NASS QuickStats | Bushels per acre by county/year |
 | Climate | gridMET via Google Earth Engine | Temperature, precipitation, solar radiation (4km grid, derived from NOAA stations) |
 | Vegetation | MODIS NDVI/EVI via Google Earth Engine | Satellite-based crop health indices |
-| Soil | ISRIC SoilGrids | Bulk density, pH, organic carbon, clay content |
+| Soil | SoilGrids (ISRIC) | Bulk density, pH, organic carbon, clay content |
 
 See `data/README.md` for details on each file.
 
