@@ -12,8 +12,11 @@ Outputsr:
 - category_importance.csv: Climate/Soil/Vegetation totals
 - improvement_summary.csv: % improvement over climate-only baseline
 - pdp_data.csv: Partial dependence plot data for top features
-- sensitivity_analysis.csv: Yield sensitivity to feature changes  (TBD)
-- optimal_conditions.csv: Feature values for top-yielding conditions  (TBD)
+- optimal_conditions.csv: Feature values for top-yielding conditions (TBD)
+
+upcoming changes:
+- exclude vegetation index and include casual features only in the PDP analysis
+- add optimal conditions/features that has most influence on yield 
 """
 
 import re
@@ -282,6 +285,24 @@ def compute_pdp_data(model, train_df: pd.DataFrame, crop: str,
     return pdp_rows
 
 
+def compute_optimal_conditions(df: pd.DataFrame, crop: str, percentile: float = 80) -> Dict:
+    """Analyze feature values for top-performing yields."""
+    threshold = np.percentile(df["yield_value"], percentile)
+    top_df = df[df["yield_value"] >= threshold]
+    
+    optimal = {
+        "crop": crop,
+        "threshold_yield": round(float(threshold), 1),
+        "n_top_samples": len(top_df),
+        "n_total_samples": len(df),
+    }
+    
+    for feature in ALL_FEATURES:
+        if feature in top_df.columns:
+            optimal[f"{feature}_mean"] = round(float(top_df[feature].mean()), 3)
+            optimal[f"{feature}_std"] = round(float(top_df[feature].std()), 3)
+    
+    return optimal
 
 def evaluate_crop(crop_df: pd.DataFrame, crop_name: str) -> Dict:
     """Evaluate all feature sets for a single crop and compute analytics."""
