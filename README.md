@@ -12,6 +12,7 @@ We wanted to see if adding soil and vegetation data could improve crop yield pre
 
 ![Model Performance](results/figures/model_performance.png)
 
+Feature importance shown from all_features model for prediction; causal interpretation uses climate and soil only (no vegetation index)
 ---
 
 ## Data sources
@@ -102,6 +103,7 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ## Roadmap
 
+- [ ] Causal interpretation model (climate + soil only, excluding vegetation indices as outcomes)
 - [ ] Add irrigation data from USGS
 - [ ] Crop-specific vegetation masking using AI or other sources
 - [ ] Crop-specific growing season
