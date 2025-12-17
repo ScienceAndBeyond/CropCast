@@ -12,7 +12,7 @@ We wanted to see if adding soil and vegetation data could improve crop yield pre
 
 ![Model Performance](results/figures/model_performance.png)
 
-<sub>Feature importance shown from all_features model for prediction; causal interpretation uses climate and soil only (no vegetation index)</sub>
+<sub>* Feature importance shown from all_features model for prediction; causal interpretation uses climate and soil only (no vegetation index)</sub>
 ---
 
 ## Data sources
