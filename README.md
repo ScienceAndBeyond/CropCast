@@ -128,6 +128,6 @@ Questions or ideas?
 If you use this, a citation would be appreciated:
 
 ```
-Prince, A. & Prince, A. (2025). CropCast: Multi-source crop yield prediction.
+Prince, Arya. & Prince, Arit. (2025). CropCast: Multi-source crop yield prediction.
 GitHub: https://github.com/ScienceAndBeyond/CropCast
 ```
