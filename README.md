@@ -97,7 +97,7 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ## Limitations
 
-- County-level data (masks field-level variation)
+- County-level data (without considering field-level variations)
 - Static soil properties (no year-to-year changes)
 - A generic growing season of Apr–Sept was used across all crops
 
