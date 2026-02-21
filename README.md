@@ -19,6 +19,7 @@ Across the crops studied, adding soil and satellite vegetation data improved tes
 Results reflect county-level modeling across 734 counties in 11 U.S. states (2010–2024) using a temporal train/test split and may not generalize beyond this study scope.
 </sub>
 
+---
 
 ## Data sources
 
