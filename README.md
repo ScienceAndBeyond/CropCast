@@ -14,7 +14,10 @@ Across the crops studied, integrating multi-source environmental data increased 
 
 ![Model Performance](results/figures/model_performance.png)
 
-<sub>* Feature importance shown from all_features model for prediction; causal interpretation uses climate and soil only (no vegetation index)</sub>
+<sub>
+* R² comparison across model variants (climate-only, climate + vegetation, climate + soil, all features). 
+Results reflect county-level modeling across 734 counties in 11 U.S. states (2010–2024) using a temporal train/test split and may not generalize beyond this study scope.
+</sub>
 ---
 
 ## Data sources
@@ -99,10 +102,11 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ## Limitations
 
-- County-level data (without considering field-level variations)
-- Static soil properties (no year-to-year changes)
-- A generic growing season of Apr–Sept was used across all crops
-
+- The model uses county-level data, so it does not capture field-level differences or individual farm management practices.
+- Soil data is treated as static, meaning it does not account for year-to-year changes in soil health or management.
+- A general April–September growing season was applied across all crops, which may not perfectly reflect each crop’s actual growing period.
+- NDVI/EVI are used as predictive indicators of crop condition and are not interpreted as direct causal drivers of yield.
+  
 ## Roadmap
 
 - [ ] Causal interpretation model (climate + soil only, excluding vegetation indices as outcomes)
