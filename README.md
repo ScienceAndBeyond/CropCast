@@ -8,7 +8,7 @@ Predicting U.S. crop yields using machine learning with climate, satellite veget
 
 This project evaluates whether incorporating soil properties and satellite-derived vegetation indices improves county-level crop yield prediction relative to climate-only models.
 
-Across the crops studied, integrating multi-source environmental data increased held-out test R² by approximately 70% on average compared to a climate-only baseline.
+Across the crops studied, adding soil and satellite vegetation data improved test R² by about 70% on average compared to using climate data alone.
 
 ## Results
 
