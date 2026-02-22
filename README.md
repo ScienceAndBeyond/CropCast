@@ -23,11 +23,11 @@ Results reflect county-level modeling across 734 counties in 11 U.S. states (201
 
 ## Data sources
 
-We used 4 data sources covering 734 counties across 11 states from 2010-2024:
+We used 4 data sources covering 734 counties across 11 states from 2010 to 2024:
 
 | Data | Source | What It Provides |
 |------|--------|------------------|
-| Crop yields | USDA NASS QuickStats | Bushels per acre by county/year |
+| Crop yields | USDA NASS QuickStats | County-level crop yield by year (crop-specific units) |
 | Climate | gridMET via Google Earth Engine | Temperature, precipitation, solar radiation (4km grid, derived from NOAA stations) |
 | Vegetation | MODIS NDVI/EVI via Google Earth Engine | Satellite-based crop health indices |
 | Soil | SoilGrids (ISRIC) | Bulk density, pH, organic carbon, clay content |
