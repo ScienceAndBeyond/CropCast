@@ -61,29 +61,34 @@ technology trend, and a same-season outcome variable rather than by weather
 response. Scored against a county-mean-plus-trend baseline with the trend
 removed, the same models show no skill.*
 
-The insensitivity result (added 2026-09-06) is the strongest single piece of
-evidence and was found late. Re-running the poster's own analysis on fully
-corrected data moves corn's test R² from 0.764 to **0.772**, and "+74%
-improvement over climate-only" to +82% — after fixing an inverted crop mask that
-averaged *non*-farmland for 11 of 18 years, unnormalised precipitation, and an
-inert soil mask. A metric that moves 0.008 under corruption of that size is not
-measuring what it is taken to measure.
+**RETRACTED 2026-09-06 — the insensitivity result.** An earlier version of this
+section claimed that re-running the poster's analysis on corrected data moved
+corn only 0.764 -> 0.772 (later 0.753), and concluded the metric is insensitive
+to data defects. Both halves were wrong:
 
-**Do not write that the poster's figures "do not survive correction."** They do
-survive. What does not survive is the interpretation, and the thing that
-overturns it is the change of evaluation protocol, not the data fixes. An
-earlier version of this file and of the README made that error.
+- `matched_rerun.py` matched the poster's configuration but not its ROWS. Corn
+  trained on 9,374 observations against the poster's 5,448 and was scored on a
+  different test set, so R2's denominator changed with the sample.
+- The defects it named are NOT in the poster's code. `archive/src_agu/
+  download_vegetation.py` has no crop mask; `download_climaate.py` uses a fixed
+  Apr-Sep season for every state so its totals are comparable; `download_soil.py`
+  uses the SoilGrids API at 0-5cm with no Earth Engine masking. The inverted
+  `cultivated.eq(1)` lives only in `download_vegetation-wip.py`, which is later
+  development work and never produced the poster.
 
-The earlier version of this thesis added "...and static soil covariates let the
-model recover county identity". **That mechanism is not supported** — a properly
-matched placebo shows soil contributing well beyond county identity. Do not
-write it. See the corrections below.
+**Never write that the poster's pipeline had an inverted crop mask, confounded
+precipitation totals, or an inert soil mask.** Check `archive/src_agu/` before
+attributing any defect to the AGU work. This was asserted repeatedly across four
+documents and a pushed commit before external review caught it.
 
-Why this framing: the data supports a strong cross-sectional claim (spatial CV
-R² ≈ 0.75 — climate and soil really do explain *where* yields are high, and it
-transfers to unseen counties) and a weak temporal one. That gap is the
-contribution. It reframes the AGU work as the "before" rather than discarding
-it, and does not depend on the model working.
+`paired_rerun.py` replaces it. On 11,786 shared county-years with identical
+yields, training the poster's model on the SAME rows with each dataset's
+features: corn +0.0890, soybeans +0.0787, spring wheat +0.0330, oats -0.0001
+(seed sd <= 0.0109). The current data predicts these county-years materially
+better. Which change is responsible is NOT isolated.
+
+The surviving framing: *similar headline scores across unmatched samples
+concealed a material difference in predictive performance.*
 
 ### The three headline results
 

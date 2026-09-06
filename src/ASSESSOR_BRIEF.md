@@ -35,7 +35,7 @@ cd <repo>/src                                       # paths are relative to here
 python -X utf8 ml.py                                # ~25 min -> ../results
 python -X utf8 evaluate.py --detrend none county    # ~25 min -> ../results
 python -X utf8 irrigation_contrast.py               # ~1 min  -> ../results_split
-python -X utf8 matched_rerun.py                     # ~2 min  -> ../results_matched
+python -X utf8 paired_rerun.py                      # ~3 min  -> ../results_matched
 ```
 
 **Do not run two of these at once** — they write to fixed paths and will race.
@@ -52,33 +52,39 @@ Poster-era outputs are in `archive/results_agu/`, in the same format.
 
 Each says where its numbers live, so you can check them directly.
 
-### Claim A — the headline metric is insensitive to serious data defects
+### Claim A — RETRACTED 2026-09-06
 
-*Source: `archive/results_agu/model_performance.csv` vs `results/model_performance.csv`.*
+**The previous Claim A said the headline metric is insensitive to serious data
+defects. It is withdrawn.** Two things were wrong with it.
 
-*Also: `results_matched/matched_vs_poster.csv`, produced by `src/matched_rerun.py`.*
+*The experiment did not control what it claimed.* `matched_rerun.py` matched the
+poster's configuration but not its rows: corn trained on 9,374 observations
+against the poster's 5,448, and was scored on a different test set with a
+different variance denominator.
 
-Correcting an inverted CDL crop mask (vegetation indices averaged over
-*non*-farmland for 2013–2023), season-total rather than per-day precipitation,
-and a soil mask covering essentially the whole county, barely changes the test
-R² of the two largest crops.
+*The provenance was wrong.* The defects it named were not in the poster's code.
+`archive/src_agu/download_vegetation.py` has no crop mask at all;
+`download_climaate.py` uses a fixed Apr–Sep season for every state, so its
+precipitation totals are comparable; `download_soil.py` uses the SoilGrids API
+at 0–5 cm with no Earth Engine masking. Those defects belong to the project's
+later development code.
 
-A **controlled** comparison is available: `matched_rerun.py` applies the
-poster's exact configuration (its 14 features, 2010 start, split rule,
-hyperparameters and seed 25) to the corrected data, so that only the data
-differs. `all_features` test R²:
+**What replaces it** (`paired_rerun.py`, `results_matched/paired_rerun.csv`):
+intersecting the two datasets on (crop, county_fips, year) gives 11,786 shared
+county-years with identical yields. Training the poster's model on the same rows
+with each dataset's features, 5 seeds:
 
-| crop | n | poster | corrected data | Δ |
-|---|---|---|---|---|
-| CORN | 11,570 | 0.764 | 0.753 | −0.011 |
-| SOYBEANS | 11,091 | 0.692 | 0.769 | +0.077 |
-| WHEAT_SPRING | 1,400 | 0.694 | 0.589 | −0.105 |
-| OATS | 2,716 | 0.448 | 0.389 | −0.059 |
-| SORGHUM | 1,134 | 0.480 | 0.228 | −0.252 |
+| crop | train / test | poster-era data | current data | Δ | seed sd |
+|---|---|---|---|---|---|
+| CORN | 4,020 / 900 | 0.5432 | 0.6322 | **+0.0890** | 0.0015 |
+| SOYBEANS | 3,829 / 865 | 0.6398 | 0.7185 | **+0.0787** | 0.0024 |
+| WHEAT_SPRING | 413 / 110 | 0.1746 | 0.2076 | +0.0330 | 0.0109 |
+| OATS | 1,199 / 156 | 0.3872 | 0.3871 | −0.0001 | 0.0053 |
 
-The claim is therefore made **for large-sample crops only**. Small-sample crops
-diverge substantially, sorghum most of all. **This is the central claim of the
-paper and the one most likely to be wrong** — see §4.1.
+The surviving claim is narrower: *similar headline scores across unmatched
+samples concealed a material difference in predictive performance* — about a 20%
+reduction in squared error for the two largest crops. Which change is responsible
+is **not** isolated; that needs an ablation with rows held fixed.
 
 ### Claim B — the apparent skill decomposes into county identity, trend, and a same-season outcome
 
@@ -124,36 +130,19 @@ beat climate).
 
 Do not stop at these, but do not skip them.
 
-**4.1 Claim A is confounded, and adjudicating it is the most valuable thing you
-can do.** The two runs differ in more than data quality:
+**4.1 Claim A has been retracted** (see §3). The open questions now are:
 
-| | poster | corrected |
-|---|---|---|
-| train / test years | 2010–2021 / 2022–2024 | 2008–2021 / 2022–2025 |
-| n features (`all_features`) | 14 | 20 |
-| crop panel | 6 (incl. upland cotton) | 5 |
-| seeds averaged | 1 | 5 |
-
-**UPDATE 2026-09-06: this confound has been addressed, and the claim narrowed
-as a result.** `src/matched_rerun.py` re-runs the poster's exact configuration
-on corrected data, so only the data differs. Corn moves −0.011 and soybeans
-+0.077, but sorghum moves −0.252. Claim A is now stated for large-sample crops
-only. Reproduce with `python -X utf8 matched_rerun.py` from `src/`.
-
-What we still want from you:
-
-- Is the matched design actually matched? We hold features, years, split rule,
-  hyperparameters and seed fixed. Have we missed a difference that matters?
-- We cap the corrected data at 2024 so the 80:20 rule lands on the poster's own
-  2022–2024 test window. Is capping legitimate, or does it cherry-pick?
-- Single seed (25) on both sides, as the poster used. Corn's Δ of 0.011 is
-  small — is it inside seed noise, and does that *strengthen* the insensitivity
-  claim or make it untestable at this sample size?
-- Sorghum moves 0.252 while corn moves 0.011. Is "insensitive at large n,
-  unstable at small n" a coherent claim, or does the sorghum result undercut
-  the whole framing?
-- Is the mirror experiment — the current protocol on poster-era data in
-  `archive/data_agu/processed/` — still worth running, or is it now redundant?
+- Is the *paired* design sound? It holds rows, model, hyperparameters and seeds
+  fixed, and varies only which dataset supplies the feature values. Anything
+  missed?
+- What ablation would isolate which change (mask, soil depth/product, season
+  definition, native scale, added features) produces the +0.089? What margin of
+  practical equivalence should be declared *before* running it?
+- Oats moves −0.0001 while corn moves +0.089. What explains a null for one crop
+  and a large effect for another on overlapping counties and years?
+- Is "similar headline scores across unmatched samples concealed a material
+  performance difference" a publishable evaluation-protocol finding, or merely a
+  restatement that R² depends on its sample?
 
 **4.2 Is `skill_vs_county_mean` the right null?** Defined as
 `1 − SSE(model)/SSE(county mean)`. Alternatives: climatology, county-mean-plus-
@@ -225,13 +214,17 @@ analysis. Weight the rest accordingly.
 2. **"Anomaly R² ≤ 0 means no skill beyond county identity."** Wrong — that
    metric was `r2_score` on residuals, centred on the mean *test* anomaly rather
    than zero. A predictor tying the county-mean baseline exactly scored −33.8.
-3. **"The poster's figures do not survive correction."** Wrong, and corrected
-   only on 2026-09-06 — they do survive (0.764 to 0.772). The error conflated
-   data corrections with the change of evaluation protocol. This is the origin
-   of Claim A.
-4. **A README reporting 3 of 5 crops**, with a "57–61%" between-county range
+3. **"The poster's figures do not survive correction."** Wrong — they do survive.
+4. **"The corrections barely move the metric" (the original Claim A).** Wrong,
+   twice over: the experiment compared different samples, and the defects it
+   named were not in the poster's code at all. Caught in external review, not by
+   this project. Both errors reached a published README and commit message.
+5. **Defect provenance asserted without checking the archived source.** The
+   inverted CDL mask, the state-confounded precipitation totals and the inert
+   soil mask were all attributed to the poster pipeline. None is in it.
+6. **A README reporting 3 of 5 crops**, with a "57–61%" between-county range
    that was the corn-and-soy range quoted as general (true range 40–61%).
-5. **An inverted CDL crop mask** averaging non-farmland for 2013–2023, and a
+7. **An inverted CDL crop mask** (in development code) averaging non-farmland for 2013–2023, and a
    column-order bug that silently corrupted 258,066 of 305,046 climate rows.
 
 Note the pattern: the recurring failure is a *metric or comparison that does not

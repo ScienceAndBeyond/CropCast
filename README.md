@@ -10,11 +10,15 @@ OpenLandMap soil properties.
 
 ## What this repository now contains
 
-The work presented at AGU 2025 has been substantially reworked. Several errors
-were found in the original pipeline, and the headline poster figures do not
-survive their correction. The poster-era code, data and results are preserved
-under [`archive/`](archive/) and tagged `agu2025-poster`; they should not be
-used as current.
+The work presented at AGU 2025 has been substantially reworked: different crop
+masking, soil product and depth, season definitions, spatial scales, and a
+different evaluation protocol. The poster-era code, data and results are
+preserved under [`archive/`](archive/) and tagged `agu2025-poster`.
+
+The poster reported its own results accurately, and its data pipeline was not
+corrupted — see [Errors](#errors-found-and-corrected) for a correction to an
+earlier version of this README that said otherwise. What the current work
+revisits is chiefly how the models are *scored*.
 
 **Current code is in [`src/`](src/).**
 
@@ -31,10 +35,10 @@ used as current.
 All intervals are 95% confidence intervals from a county-clustered bootstrap.
 2008–2025, 11 states.
 
-### 1. Once the technology trend is removed, the models lose to a county average
+### 1. Under county detrending, corn and soybean models underperform a county-mean reference
 
-Yields rise over time for reasons unrelated to weather. Detrended, and scored
-against simply predicting each county's historical mean yield:
+Yields rise over time. Detrended, and scored against predicting each county's
+historical mean yield:
 
 | crop | n | full model (climate + soil + satellite) | county mean + linear trend |
 |---|---|---|---|
@@ -44,12 +48,19 @@ against simply predicting each county's historical mean yield:
 | Sorghum | 1,389 | [−0.040, 0.124] | [−0.077, −0.063] |
 | Spring wheat | 1,706 | **[0.081, 0.257]** | [0.005, 0.015] |
 
-All five crops in the study are shown. For the two highest-volume crops the full
-model is *significantly worse* than a county average, while a county average plus
-a straight line is significantly better. Oats and sorghum straddle zero — not
-distinguishable from a county average either way. Spring wheat is the only crop
-with skill significantly above zero, and it is also the crop with a missing test
-year (see Limitations).
+All five crops are shown. Corn and soybeans are *significantly worse* than a
+county mean, while county mean plus a straight line is significantly better.
+Oats and sorghum are **inconclusive** — positive point estimates with intervals
+spanning zero, which is insufficient evidence of improvement rather than evidence
+of failure. Spring wheat has positive skill, and is also the crop with a missing
+test year (see Limitations).
+
+Two cautions on reading this. The removed linear component is **not necessarily a
+technology trend** — it can absorb warming, irrigation expansion, cultivar
+change, or anything else gradual. And the detrended comparison refits the model
+and changes the reference prediction, so it is not simply exposing the raw
+model's "true" skill: undetrended, corn and soybean models do beat both a shared
+and a county-specific trend baseline (corn 0.772 vs 0.683 and 0.676).
 
 Sorghum is the weakest case in the panel: it is the smallest sample, the only
 crop where `county_mean_trend` is itself negative, and the only one where soil
@@ -60,7 +71,7 @@ because 40–61% of yield variance is persistent differences *between* counties
 that county identity alone explains (corn 57%, soybeans 61%, spring wheat 54%,
 oats 52%, sorghum 40%).
 
-### 2. Irrigation decouples yield from weather
+### 2. Weather associations are weaker under irrigation
 
 Where NASS reports both irrigated and non-irrigated corn for the **same county
 in the same year**, county, soil and season are held constant and only
@@ -79,65 +90,109 @@ sensitivity:
 Mean irrigated-minus-rainfed gap: **+81.4 BU/AC**. This is an *association*
 within counties, not a randomised treatment effect.
 
-### 3. Soil is not merely a county fingerprint
+**The direction is robust; the magnitude is not.** These are in-sample fits, and
+the variance-explained gap depends heavily on one year: dropping 2012 moves the
+detrended rainfed R² from 0.699 to 0.300 while the irrigated figure barely moves
+(0.253 → 0.256). The precipitation contrast also differs sharply by state —
+rainfed/irrigated correlation is 0.771/0.373 in Kansas but 0.711/−0.051 in
+Nebraska. Read this as *weaker weather association under irrigation in this
+selected sample*, not as a general sensitivity ratio or a causal variance
+fraction. Counties enter only if NASS published both practices, and the direction
+of that selection bias cannot be determined from the selection rule alone.
+
+### 3. Soil features outperform a matched random-feature control
 
 Soil takes one value per county, so a model given soil could in principle
-recover county identity without learning any agronomy. Tested against a placebo
-— the same climate model plus four random numbers held constant per county —
-county identity explains only **7–13%** of soil's contribution (21% for spring
-wheat). Sorghum is excluded from this comparison: soil does not improve on
-climate alone for it, so the ratio is undefined.
+recover county identity without learning any agronomy. Against a control — the
+same climate model plus four random numbers held constant per county — soil's
+gain is 7–13× the control's (21% for spring wheat; undefined for sorghum, where
+soil does not beat climate alone).
+
+**This does not identify how much of soil's contribution is county identity.**
+Four random county-constant numbers are one particular encoding of identity, and
+a random forest need not exploit arbitrary coordinates as efficiently as
+geographically structured soil variables. The surviving claim is only that soil
+beats this control. A stronger test would permute whole soil vectors between
+counties, preserving their covariance, and compare against coordinates and
+climate normals.
 
 ---
 
 ## Errors found and corrected
 
-Documented in full in [`src/HANDOFF.md`](src/HANDOFF.md). The most
-consequential:
+Documented in full in [`src/HANDOFF.md`](src/HANDOFF.md).
 
-- **Inverted crop mask.** The CDL `cultivated` band is `1 = Non-cultivated`,
-  `2 = Cultivated`. The original code used `.eq(1)`, so for 2013–2023 every
-  vegetation index was averaged over land that was *not* farmland. Story County,
-  Iowa reads 0.772 cropland under the corrected mask and 0.216 under the old one
-  — the exact complement.
-- **Season-total precipitation.** Growing-season windows differ by state
-  (Minnesota 153 days vs 183), so totals were not comparable across states and
-  the model could learn "low rainfall = Minnesota". Now per-day rates.
-- **Soil masking that did nothing.** The "cropland union" mask covered
-  essentially the whole county; masked and unmasked values agreed to r = 0.9999.
+### Correction, 2026-09-06 — read this first
+
+**An earlier version of this section attributed defects to the AGU poster that
+were not in the poster's code.** It claimed an inverted CDL crop mask, precipitation
+totals confounded with state, and an inert soil mask. Checking
+[`archive/src_agu/`](archive/src_agu/) directly:
+
+| claimed defect | actually in the poster? |
+|---|---|
+| Inverted CDL mask, 2013–2023 | **No.** `download_vegetation.py` has no crop mask at all; `cultivated.eq(1)` appears only in a later WIP file that never produced these results |
+| Season totals confounded with state | **No.** A fixed April–September window is used for every state, so totals are comparable |
+| Inert soil "cropland union" mask | **No.** SoilGrids API at 0–5 cm; there is no Earth Engine masking |
+| Non-native reduction scale | **Yes.** `GRIDMET_SCALE = 4000` against a 4638.31 m native grid |
+
+Those three belong to the project's later development code. Attributing them to
+the poster was wrong, and it was repeated in the README, the archive README and a
+commit message before being caught in independent review.
+
+### Genuine issues in the poster analysis
+
+Mostly design and evaluation choices rather than corrupted data:
+
+- **No crop mask on vegetation** — NDVI/EVI averaged over whole counties,
+  including non-agricultural land.
+- **Soil at 0–5 cm**, a surface value rather than a rooting-zone depth.
+- **A fixed Apr–Sep season for all states and crops**, which fits neither spring
+  wheat in North Dakota nor the southern end of the sample.
+- **Non-native reduction scale**, forcing resampling.
+- **Test R² on a county-year panel with no county-mean baseline and no
+  detrending.** This is the substantive issue, and what the current work addresses.
+- **"+74%" is a mean of per-crop ratios**, dominated by crops with weak
+  baselines: oats +137% off R² 0.189, spring wheat +162% off 0.265, while corn —
+  the largest crop — improved 28%.
+
+### Errors in the reworked pipeline, found and fixed
+
 - **A metric that did not measure what it claimed.** An R² computed on residuals
   was described as skill against a county-mean baseline. A predictor tying that
   baseline exactly scored −33.8.
 - **A placebo that tested the wrong contrast**, which reversed a headline
   conclusion once corrected.
+- **An inverted CDL mask and a column-order bug** in development code, caught
+  before any result depended on them.
 
-**For the two largest crops, these corrections barely move the poster's headline
-number.** Re-running the poster's exact configuration — its 14 features, its
-2010 start, its split rule, its hyperparameters and seed — on fully corrected
-data ([`src/matched_rerun.py`](src/matched_rerun.py), so that only the *data*
-differs):
+### Does the newer data predict better? Yes — measured on identical rows
 
-| crop | n | poster | corrected data | Δ |
+An earlier version of this README claimed the corrections "barely move" the
+headline number, based on [`src/matched_rerun.py`](src/matched_rerun.py). That
+experiment matched the poster's *configuration* but not its *rows* — corn trained
+on 9,374 observations against the poster's 5,448 — so it compared R² across
+different test sets. **That claim is retracted.**
+
+The paired version intersects the two datasets on (crop, county_fips, year),
+giving 11,786 shared county-years with identical yield values, and trains the
+poster's own model on the same rows using each dataset's features (5 seeds):
+
+| crop | train / test | poster-era data | current data | Δ |
 |---|---|---|---|---|
-| Corn | 11,570 | 0.764 | **0.753** | −0.011 |
-| Soybeans | 11,091 | 0.692 | **0.769** | +0.077 |
-| Spring wheat | 1,400 | 0.694 | 0.589 | −0.105 |
-| Oats | 2,716 | 0.448 | 0.389 | −0.059 |
-| Sorghum | 1,134 | 0.480 | 0.228 | −0.252 |
+| Corn | 4,020 / 900 | 0.543 | 0.632 | **+0.089** |
+| Soybeans | 3,829 / 865 | 0.640 | 0.719 | **+0.079** |
+| Spring wheat | 413 / 110 | 0.175 | 0.208 | +0.033 |
+| Oats | 1,199 / 156 | 0.387 | 0.387 | −0.000 |
 
-Corn moves by 0.011 after correcting a crop mask that had averaged vegetation
-indices over *non*-farmland for 11 of 18 years. The poster reported its own
-results accurately (both its figures reconcile exactly to
-[`archive/results_agu/`](archive/results_agu/)).
+Seed spread is ≤0.011, so corn and soybeans sit well outside noise — about a 20%
+reduction in squared error. **Which** change is responsible (masking, soil depth
+and product, season definition, native scales, added features) has not been
+isolated; that needs an ablation with rows held fixed.
 
-A metric that barely notices defects of that size, on the crops with the most
-data, is not measuring what it appears to measure — see Findings below. What
-overturns the poster's conclusion is not the data corrections but the change of
-evaluation protocol.
-
-The small-sample crops behave differently: sorghum (n = 1,134) moves by 0.252.
-The insensitivity claim is therefore made **for the large-sample crops only**,
-and the divergence at small n is reported rather than averaged away.
+Similar headline scores across *unmatched* samples therefore concealed a material
+difference in predictive performance. That, rather than any insensitivity of the
+metric, is what the comparison actually shows.
 
 ---
 

@@ -3,41 +3,72 @@
 Everything here backs the AGU 2025 poster (GC13F-0713) and is **superseded**.
 Retained for provenance; tagged `agu2025-poster`.
 
-`src_agu/`, `results_agu/`, `data_agu/` are NOT reproducible with the current
-pipeline and contain known defects, most importantly:
+`src_agu/`, `results_agu/`, `data_agu/` are the poster pipeline, its outputs and
+its processed inputs. They are not reproducible with the current code, which
+differs in data sources, spatial masking, season definitions and evaluation.
 
-- The CDL crop mask was inverted for 2013-2023 (`cultivated.eq(1)` selects
-  *Non*-cultivated), so vegetation indices for those years were averaged over
-  land that was not farmland.
-- Precipitation and reference ET were season totals while growing-season
-  windows differ by state, letting the model learn "low rainfall = Minnesota".
-- Soil used a "cropland union" mask that covered essentially the whole county,
-  and a 0 cm surface value rather than a rooting-zone depth.
-- No irrigation control, which is the largest single confounder for the
-  poster's "29 C heat threshold" claim.
+## The poster reported its own results accurately
 
-**The poster reported its own results accurately, and its headline figures
-survive these corrections.** Both reconcile exactly to
-`results_agu/improvement_summary.csv` as committed here: CORN `best_r2` = 0.764,
-and the mean of `pct_improvement` across the six crops is 74.1%. Re-running the
-same analysis on fully corrected data gives CORN 0.772 and +82%.
+Both headline figures reconcile exactly to `results_agu/improvement_summary.csv`
+as committed here: CORN `best_r2` = 0.764, and the mean of `pct_improvement`
+across the six crops is 74.1%.
 
-The defects listed above are real and worth fixing, but they are not what
-changes the conclusion. That a crop mask can be inverted for 11 of 18 years
-while the headline R2 moves by 0.008 is the finding, not a footnote.
+## Correction, 2026-09-06
 
-Two caveats on the "+74%" that are matters of method rather than of data, and
-would apply even to a clean pipeline:
+**An earlier version of this file listed defects that were not in this code.**
+It claimed the poster pipeline had an inverted CDL crop mask, state-confounded
+precipitation totals, and an inert soil mask. Checking `src_agu/` directly:
 
-- It is a mean of per-crop ratios, so crops with weak baselines dominate. Oats
-  (+137%, baseline R2 0.189) and spring wheat (+162%, baseline 0.265) pull the
-  average up; corn, the largest crop, improved 28%.
-- Test R2 on a county-year panel largely measures persistent differences
-  *between* counties. The current analysis scores against a county-mean
-  baseline instead, which is the change that reverses the conclusion.
+- `src_agu/download_vegetation.py` contains **no crop mask of any kind**. MODIS
+  NDVI/EVI is averaged over whole county polygons. The inverted
+  `cultivated.eq(1)` selector exists only in a later `download_vegetation-wip.py`
+  that never produced these results.
+- `src_agu/download_climaate.py` uses a **fixed April–September season for every
+  state** (`GROWING_SEASON_START_MONTH = 4`, `END_MONTH = 9`). Precipitation and
+  ETO are sums over that fixed window, so they are comparable across states. The
+  state-varying season windows that make totals misleading came later.
+- `src_agu/download_soil.py` uses the **SoilGrids API at 0–5 cm**. There is no
+  Earth Engine masking to be inert.
 
-The poster's crop panel also included upland cotton, which the current study
-drops: the 11-state Corn Belt / Northern Plains sample does not contain
-meaningful cotton acreage.
+Those three defects belong to the project's later development code, not to the
+poster. Attributing them here was wrong.
+
+## What is actually different about the poster pipeline
+
+These are design choices and limitations, not corrupted data:
+
+- **No crop mask.** Vegetation indices are county-wide averages including
+  non-agricultural land. The current pipeline restricts to stable cropland.
+- **Soil at 0–5 cm** from SoilGrids, a surface value rather than a rooting-zone
+  depth. The current pipeline uses OpenLandMap thickness-weighted over 0–30 cm.
+- **A fixed Apr–Sep season for all states and crops**, which does not match
+  spring wheat in North Dakota or the southern end of the sample.
+- **Non-native reduction scale**: `GRIDMET_SCALE = 4000` against a 4638.31 m
+  native grid, forcing resampling. This one is a genuine poster-era defect.
+- **Evaluation.** Test R² on a county-year panel, with no county-mean baseline
+  and no detrending. This, not the data, is what the current work revisits.
+- **"+74%" is a mean of per-crop ratios**, so crops with weak baselines dominate:
+  oats (+137%, baseline R² 0.189) and spring wheat (+162%, baseline 0.265) pull
+  the average up while corn, the largest crop, improved 28%.
+
+## Does the newer data predict better?
+
+Yes, and this was measured on identical rows rather than inferred. Intersecting
+`data_agu/processed/merged.csv` with the current `data/processed/merged.csv` on
+(crop, county_fips, year) gives 11,786 shared county-years with identical yield
+values. Training the poster's own model on the same rows, using each dataset's
+version of the poster's 14 features (mean of 5 seeds):
+
+| crop | train / test | poster-era data | current data | Δ |
+|---|---|---|---|---|
+| CORN | 4,020 / 900 | 0.543 | 0.632 | **+0.089** |
+| SOYBEANS | 3,829 / 865 | 0.640 | 0.719 | **+0.079** |
+| WHEAT_SPRING | 413 / 110 | 0.175 | 0.208 | +0.033 |
+| OATS | 1,199 / 156 | 0.387 | 0.387 | −0.000 |
+
+Seed spread is ≤0.011, so corn and soybeans are well outside noise — roughly a
+20% reduction in squared error. Which of the many changes (masking, soil depth
+and product, season definition, native scales, added features) is responsible has
+**not** been isolated; that would need an ablation holding rows fixed.
 
 See `../src/HANDOFF.md`.

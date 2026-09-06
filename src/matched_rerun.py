@@ -1,4 +1,23 @@
 """
+SUPERSEDED 2026-09-06 -- DO NOT CITE THIS SCRIPT'S RESULT.
+
+This experiment matched the poster's CONFIGURATION but not its ROWS. The
+corrected dataset contains more eligible county-years, so corn trained on 9,374
+observations against the poster's 5,448 and was scored on a different test set
+with a different variance denominator. Comparing R2 across different samples
+does not isolate the effect of the data.
+
+The conclusion drawn from it -- that the corrections "barely move" the headline
+metric -- is RETRACTED. On identical rows (see paired_rerun.py) the corrected
+data scores +0.089 higher on corn and +0.079 on soybeans.
+
+Kept for provenance and because its per-crop scores are still a valid record of
+"poster configuration on current data". Use paired_rerun.py for any claim about
+what the data changes did.
+
+Original docstring follows.
+--------------------------------------------------------------------------
+
 Matched re-run: the AGU 2025 poster's EXACT analysis, on CORRECTED data.
 
 WHY THIS EXISTS
