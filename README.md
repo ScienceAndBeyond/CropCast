@@ -4,7 +4,7 @@ County-level crop yield analysis for the US Corn Belt and Northern Plains,
 combining USDA NASS yields, gridMET climate, MODIS vegetation indices and
 OpenLandMap soil properties.
 
-**Arit Prince** · [AGU 2025 poster GC13F-0713](poster/) · New Orleans
+**Arit Prince** & **Arya Prince"· [AGU 2025 poster GC13F-0713](poster/) · New Orleans
 
 ---
 
@@ -22,7 +22,6 @@ revisits is chiefly how the models are *scored*.
 
 **Current code is in [`src/`](src/).**
 
-| [`src/ABLATION_PREREGISTRATION.md`](src/ABLATION_PREREGISTRATION.md) | Design and decision rule for the preprocessing ablation, fixed in advance |
 | [`archive/README.md`](archive/README.md) | What is wrong with the poster-era material |
 
 ---
@@ -116,8 +115,6 @@ climate normals.
 ---
 
 ## Errors found and corrected
-
-Documented in full in [`src/HANDOFF.md`](src/HANDOFF.md).
 
 ### Correction, 2026-09-06 — read this first
 
