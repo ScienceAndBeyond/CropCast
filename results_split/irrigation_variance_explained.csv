@@ -1,5 +1,5 @@
-trend,practice,r2_weather_in_sample,sd_anomaly,mean_yield
-none,irrigated,0.166,15.28,190.3
-none,non_irrigated,0.685,29.54,108.9
-linear,irrigated,0.253,13.87,190.3
-linear,non_irrigated,0.699,29.1,108.9
+trend,practice,r2_weather_in_sample,r2_weather_cv,optimism,sd_anomaly,mean_yield,n_pairs,n_counties
+none,irrigated,0.166,0.152,0.014,15.28,190.3,867,114
+none,non_irrigated,0.685,0.68,0.005,29.54,108.9,867,114
+linear,irrigated,0.253,0.237,0.015,13.87,190.3,867,114
+linear,non_irrigated,0.699,0.695,0.005,29.1,108.9,867,114

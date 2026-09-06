@@ -138,6 +138,20 @@ def load_pairs() -> pd.DataFrame:
             f"Dropped {dropped:,} pairs in counties with < {MIN_YEARS_PER_COUNTY} paired years"
         )
 
+    df = recompute_anomalies(df)
+    df["gap"] = df["irrigated"] - df["non_irrigated"]
+    return df
+
+
+def recompute_anomalies(df: pd.DataFrame) -> pd.DataFrame:
+    """Derive the county anomalies and detrended anomalies from scratch.
+
+    Both are ESTIMATED from whichever rows are present, so any analysis that
+    drops rows (leave-one-year-out, per-state) has to redo them rather than
+    subset columns computed on the full panel.
+    """
+    df = df.copy()
+
     # Within-county anomalies: county fixed effect removed from both sides.
     for col in PRACTICES + WEATHER:
         df[col + "_a"] = df[col] - df.groupby("county_fips")[col].transform("mean")
@@ -154,8 +168,6 @@ def load_pairs() -> pd.DataFrame:
         a = df[col + "_a"].to_numpy(dtype=float)
         slope = float(np.sum(yr_c * a) / denom) if denom > 0 else 0.0
         df[col + "_dt"] = a - slope * yr_c
-
-    df["gap"] = df["irrigated"] - df["non_irrigated"]
     return df
 
 
@@ -269,23 +281,119 @@ def contrast(df: pd.DataFrame, suffix: str, seed: int = RANDOM_SEED) -> pd.DataF
     return pd.DataFrame(rows)
 
 
+def _fit_r2(X: np.ndarray, y: np.ndarray) -> float:
+    """In-sample R2 of an OLS fit."""
+    beta, *_ = np.linalg.lstsq(X, y, rcond=None)
+    ss_tot = float(np.sum((y - y.mean()) ** 2))
+    if not ss_tot:
+        return np.nan
+    return 1 - float(np.sum((y - X @ beta) ** 2)) / ss_tot
+
+
+def _cv_r2(X: np.ndarray, y: np.ndarray, groups: np.ndarray, n_folds: int = 5,
+           seed: int = RANDOM_SEED) -> float:
+    """
+    Cross-validated R2, holding out whole COUNTIES.
+
+    In-sample R2 flatters a fit, and it flatters hardest when the true signal is
+    near zero - which is the irrigated arm here. Counties are the grouping unit
+    because pairs from the same county share soil, management and operator.
+    """
+    uniq = np.unique(groups)
+    if len(uniq) < n_folds:
+        return np.nan
+    rng = np.random.default_rng(seed)
+    shuffled = rng.permutation(uniq)
+    folds = dict(zip(shuffled, np.arange(len(shuffled)) % n_folds))
+    assign = np.array([folds[g] for g in groups])
+
+    pred = np.full(len(y), np.nan)
+    for f in range(n_folds):
+        te = assign == f
+        tr = ~te
+        if tr.sum() < X.shape[1] + 1 or te.sum() == 0:
+            continue
+        beta, *_ = np.linalg.lstsq(X[tr], y[tr], rcond=None)
+        pred[te] = X[te] @ beta
+
+    ok = ~np.isnan(pred)
+    ss_tot = float(np.sum((y[ok] - y[ok].mean()) ** 2))
+    if not ss_tot:
+        return np.nan
+    return 1 - float(np.sum((y[ok] - pred[ok]) ** 2)) / ss_tot
+
+
 def variance_explained(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
-    """IN-SAMPLE share of each practice's yield anomaly fitted by weather jointly."""
+    """Share of each practice's yield anomaly fitted by weather jointly.
+
+    Reports the in-sample figure and a county-grouped cross-validated one. The
+    in-sample number is retained because earlier results quote it; the CV number
+    is the one to believe.
+    """
     X = np.column_stack([df[w + suffix].to_numpy() for w in WEATHER] + [np.ones(len(df))])
+    groups = df["county_fips"].to_numpy()
     out = []
     for p in PRACTICES:
         y = df[p + suffix].to_numpy()
-        beta, *_ = np.linalg.lstsq(X, y, rcond=None)
-        resid = y - X @ beta
-        ss_tot = float(np.sum((y - y.mean()) ** 2))
+        r2_in = _fit_r2(X, y)
+        r2_cv = _cv_r2(X, y, groups)
         out.append({
             "trend": TREND_MODES[suffix],
             "practice": p,
-            "r2_weather_in_sample": (round(1 - float(np.sum(resid ** 2)) / ss_tot, 3)
-                                     if ss_tot else np.nan),
+            "r2_weather_in_sample": round(r2_in, 3) if r2_in == r2_in else np.nan,
+            "r2_weather_cv": round(r2_cv, 3) if r2_cv == r2_cv else np.nan,
+            "optimism": (round(r2_in - r2_cv, 3)
+                         if r2_in == r2_in and r2_cv == r2_cv else np.nan),
             "sd_anomaly": round(float(np.std(y)), 2),
             "mean_yield": round(float(df[p].mean()), 1),
+            "n_pairs": len(df),
+            "n_counties": int(df["county_fips"].nunique()),
         })
+    return pd.DataFrame(out)
+
+
+def leave_one_year_out(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
+    """Refit with each year dropped, to see whether one season carries the gap."""
+    out = []
+    for drop in [None] + sorted(df["year"].unique()):
+        sub = df if drop is None else recompute_anomalies(df[df["year"] != drop])
+        if len(sub) < 50:
+            continue
+        X = np.column_stack([sub[w + suffix].to_numpy() for w in WEATHER]
+                            + [np.ones(len(sub))])
+        row = {"trend": TREND_MODES[suffix],
+               "dropped_year": "none" if drop is None else int(drop),
+               "n_pairs": len(sub)}
+        for p in PRACTICES:
+            r2 = _fit_r2(X, sub[p + suffix].to_numpy())
+            row[f"r2_{p}"] = round(r2, 3) if r2 == r2 else np.nan
+        row["r2_gap"] = (round(row["r2_non_irrigated"] - row["r2_irrigated"], 3)
+                         if row["r2_non_irrigated"] == row["r2_non_irrigated"] else np.nan)
+        out.append(row)
+    return pd.DataFrame(out)
+
+
+def by_state(df: pd.DataFrame, suffix: str) -> pd.DataFrame:
+    """Same contrast refit within each state. The pooled figure hides real spread."""
+    out = []
+    for state, grp in df.groupby("state_alpha"):
+        if len(grp) < 50:
+            continue
+        sub = recompute_anomalies(grp)
+        X = np.column_stack([sub[w + suffix].to_numpy() for w in WEATHER]
+                            + [np.ones(len(sub))])
+        row = {"trend": TREND_MODES[suffix], "state": state, "n_pairs": len(sub),
+               "n_counties": int(sub["county_fips"].nunique())}
+        for p in PRACTICES:
+            y = sub[p + suffix].to_numpy()
+            r2 = _fit_r2(X, y)
+            row[f"r2_{p}"] = round(r2, 3) if r2 == r2 else np.nan
+            for w in WEATHER:
+                x = sub[w + suffix].to_numpy()
+                sd = np.std(x) * np.std(y)
+                row[f"corr_{p}_{w}"] = (round(float(np.mean((x - x.mean()) * (y - y.mean())) / sd), 3)
+                                        if sd else np.nan)
+        out.append(row)
     return pd.DataFrame(out)
 
 
@@ -305,11 +413,15 @@ def run() -> None:
     ve = pd.concat([variance_explained(df, s) for s in TREND_MODES], ignore_index=True)
     cs = pd.concat([contrast(df, s) for s in TREND_MODES], ignore_index=True)
 
+    loo = pd.concat([leave_one_year_out(df, s) for s in TREND_MODES], ignore_index=True)
+    st = pd.concat([by_state(df, s) for s in TREND_MODES], ignore_index=True)
+
     for label in TREND_MODES.values():
         logging.info(f"\n  --- trend={label} ---")
         for _, r in ve[ve.trend == label].iterrows():
-            logging.info(f"    {r['practice']:14s} in-sample weather R2="
-                         f"{r['r2_weather_in_sample']:.3f}  sd(anomaly)={r['sd_anomaly']:.1f}")
+            logging.info(f"    {r['practice']:14s} weather R2  in-sample={r['r2_weather_in_sample']:.3f}"
+                         f"  cross-validated={r['r2_weather_cv']:.3f}"
+                         f"  (optimism {r['optimism']:+.3f})  sd(anomaly)={r['sd_anomaly']:.1f}")
         for _, r in cs[cs.trend == label].iterrows():
             logging.info(
                 f"    {r['weather']:9s} rainfed {r['slope_rainfed']:+8.2f} "
@@ -320,8 +432,30 @@ def run() -> None:
                 f"%mean {r['ratio_abs_pct']}  p(|irr|>=|rain|)={r['p_no_decoupling']}"
             )
 
+    logging.info("\n  --- leave-one-year-out (weather R2, in-sample, detrended) ---")
+    sub = loo[loo.trend == "linear"]
+    base = sub[sub.dropped_year == "none"].iloc[0]
+    logging.info(f"    {'dropped':>8}{'n':>7}{'rainfed':>10}{'irrigated':>11}{'gap':>9}")
+    for _, r in sub.iterrows():
+        flag = ""
+        if r["dropped_year"] != "none" and abs(r["r2_gap"] - base["r2_gap"]) > 0.15:
+            flag = "  <- carries the gap"
+        logging.info(f"    {str(r['dropped_year']):>8}{r['n_pairs']:>7,}"
+                     f"{r['r2_non_irrigated']:>10.3f}{r['r2_irrigated']:>11.3f}"
+                     f"{r['r2_gap']:>9.3f}{flag}")
+
+    logging.info("\n  --- by state (detrended) ---")
+    for _, r in st[st.trend == "linear"].iterrows():
+        logging.info(f"    {r['state']}  n={r['n_pairs']:,} ({r['n_counties']} counties)  "
+                     f"weather R2 rainfed={r['r2_non_irrigated']:.3f} "
+                     f"irrigated={r['r2_irrigated']:.3f}  |  PRCP corr "
+                     f"rainfed={r['corr_non_irrigated_PRCP']:+.3f} "
+                     f"irrigated={r['corr_irrigated_PRCP']:+.3f}")
+
     save_df(cs, RESULTS_DIR / "irrigation_contrast.csv")
     save_df(ve, RESULTS_DIR / "irrigation_variance_explained.csv")
+    save_df(loo, RESULTS_DIR / "irrigation_leave_one_year_out.csv")
+    save_df(st, RESULTS_DIR / "irrigation_by_state.csv")
     save_df(df, RESULTS_DIR / "irrigation_pairs.csv")
     logging.info(f"\n  Written to {RESULTS_DIR}")
     logging.info("  READ AS: within-county associations, in-sample. 2008-2018, corn, "

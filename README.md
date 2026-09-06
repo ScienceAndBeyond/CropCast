@@ -65,7 +65,9 @@ Most of what these models get right is where yields are high rather than which y
 
 USDA reports irrigated and non-irrigated corn separately for some counties. Where both appear in the same county and year, soil and weather are identical and only management differs. We found 867 such pairs across 114 counties from 2008 to 2018.
 
-Weather explains 68.5% of the year-to-year variation in rainfed yields but only 16.6% for irrigated. Irrigated corn responds far less to rainfall in particular.
+Weather explains 68.5% of the year-to-year variation in rainfed yields but only 16.6% for irrigated. Holding out whole counties in cross-validation barely changes this, so the fit is not simply flattering itself: rainfed drops to 68.0% and irrigated to 15.2%.
+
+Irrigated corn responds far less to rainfall in particular.
 
 | Weather | Rainfed | Irrigated | Ratio |
 |---------|---------|-----------|-------|
@@ -74,6 +76,17 @@ Weather explains 68.5% of the year-to-year variation in rainfed yields but only 
 | Vapor pressure deficit | −73.44 | −17.02 | 0.45 |
 
 Irrigated fields yielded 81.4 BU/AC more on average.
+
+**Drought years carry most of the gap.** Refitting with each year dropped in turn, and recomputing the anomalies each time, every year leaves the result roughly unchanged except 2012. Dropping 2012 alone takes the rainfed figure from 0.699 to 0.321 while irrigated barely moves, closing the gap from 0.45 to 0.05. The 2012 drought is doing most of the work, which fits the mechanism but means this is really a statement about how irrigation protects yields in a severe drought, not in an average year.
+
+**The two states differ.** Nebraska supplies 665 of the 867 pairs and Kansas 202.
+
+| State | Pairs | Rainfed R² | Irrigated R² | Rainfed PRCP corr | Irrigated PRCP corr |
+|-------|-------|------------|--------------|-------------------|---------------------|
+| Kansas | 202 | 0.728 | 0.491 | +0.771 | +0.373 |
+| Nebraska | 665 | 0.703 | 0.247 | +0.711 | −0.051 |
+
+Irrigated corn in Nebraska shows essentially no rainfall response, while Kansas retains some. Full tables are in `results_split/irrigation_leave_one_year_out.csv` and `results_split/irrigation_by_state.csv`.
 
 ### Soil is doing real work
 
@@ -173,7 +186,6 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 - The crop mask is generic cropland and not crop-specific, so corn NDVI includes soybean fields.
 - The soil mask uses land cover from the whole study period, including test years.
 - The irrigation comparison ends in 2018, when USDA stopped publishing the county-level split, and only covers counties that reported both practices. Farmers choose whether to irrigate, so this is an association rather than an experiment.
-- The size of the irrigation gap depends heavily on drought years. Dropping 2012 alone moves the rainfed figure from 0.699 to 0.300 while the irrigated figure barely moves. Kansas and Nebraska also behave differently.
 - The trend removed from yields is not purely technology. Warming, irrigation, and changing varieties all move slowly enough to be absorbed by a straight line.
 - The oats result in the comparison table is flat overall but not stable underneath. 2023 got worse and 2024 got better by almost the same amount, on only eight counties. Per-year figures are in `results_comparison/paired_rerun_by_year.csv`.
 - Spring wheat has no county estimates for 2024, leaving a gap in its test years, and it is the only crop with a clear detrended gain.
@@ -184,7 +196,7 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 ## Roadmap
 
 - [ ] Isolate which pipeline change earns the prediction improvement
-- [ ] Cross-validated and leave-one-year-out irrigation results
+- [ ] Extend the irrigation comparison beyond corn and beyond two states
 - [ ] Crop-specific vegetation masking
 - [ ] Extend the irrigation comparison past 2018 with another data source
 

@@ -1,0 +1,5 @@
+trend,state,n_pairs,n_counties,r2_irrigated,corr_irrigated_PRCP,corr_irrigated_EDD_TMAX,corr_irrigated_VPD,corr_irrigated_TMAX,r2_non_irrigated,corr_non_irrigated_PRCP,corr_non_irrigated_EDD_TMAX,corr_non_irrigated_VPD,corr_non_irrigated_TMAX
+none,KS,202,36,0.495,0.41,-0.698,-0.671,-0.69,0.735,0.778,-0.763,-0.805,-0.788
+none,NE,665,78,0.095,0.03,-0.249,-0.222,-0.247,0.679,0.719,-0.73,-0.783,-0.739
+linear,KS,202,36,0.491,0.373,-0.682,-0.661,-0.688,0.728,0.771,-0.755,-0.799,-0.784
+linear,NE,665,78,0.247,-0.051,-0.303,-0.28,-0.345,0.703,0.711,-0.749,-0.805,-0.776
