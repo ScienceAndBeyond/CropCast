@@ -1,0 +1,28 @@
+# ---- SECRETS
+# Values in any committed .env were placeholders, but a tracked .env invites a
+# real key later. Keep every one of them out; .env.example is the template.
+.env
+*.env
+!.env.example
+
+# ---- environment
+.venv/
+__pycache__/
+*.py[cod]
+.idea/
+
+# ---- large, regenerable data (162 MB) — reproduce with the download scripts
+data/
+data_raw/
+
+# ---- run logs
+*.log
+
+# ---- local-only working material, never published (4.4 GB): poster-era
+# vintages, pre-fix snapshots, superseded root files from before this folder
+# became the repo working tree
+_local_archive/
+
+# NOTE: archive/ is deliberately TRACKED (poster-era code, data and results, so
+# the corrections are checkable against what they replaced). It is not ignored
+# here on purpose — a blanket rule would silently drop new files added to it.

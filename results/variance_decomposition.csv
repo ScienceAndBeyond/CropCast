@@ -1,0 +1,6 @@
+crop,n_obs,n_counties,n_years,total_variance,between_county_pct,within_county_pct,soil_tuples_per_county
+CORN,13809,941,18,1435.34,57.1,42.9,941/941
+OATS,3315,486,18,300.77,51.9,48.1,486/486
+SORGHUM,1389,218,18,587.83,39.8,60.2,218/218
+SOYBEANS,13233,913,18,124.73,61.4,38.6,913/913
+WHEAT_SPRING_EXCL_DURUM,1706,174,17,137.09,53.9,46.1,174/174
