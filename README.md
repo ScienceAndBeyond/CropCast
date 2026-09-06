@@ -22,7 +22,7 @@ from 2008 to 2025.
 ## What the program does
 
 Four download scripts pull the raw data, one merges it and trains models, and
-three more analyse the results.
+three more analyze the results.
 
 **Downloading.** `download_yield.py` pulls county yields from the USDA NASS
 QuickStats API. The three Earth Engine scripts — `download_climate.py`,
@@ -36,9 +36,9 @@ resampling.
 Climate is downloaded monthly and aggregated into growing-season features
 afterwards, so the season can be redefined without re-downloading. Alongside
 temperature and rainfall the aggregation computes heat-stress measures: growing
-and extreme degree days, the fraction of hot days, and vapour pressure deficit.
+and extreme degree days, the fraction of hot days, and vapor pressure deficit.
 
-**Modelling.** `ml.py` joins the four sources into one county-year table and
+**Modeling.** `ml.py` joins the four sources into one county-year table and
 trains a random forest per crop. It fits four feature sets — climate only,
 climate plus soil, climate plus vegetation, and everything — so each source's
 contribution can be read off. Models are tested on held-out years rather than
@@ -75,7 +75,7 @@ its own native scale.
 on a county-year panel. The trouble is that 40–61% of yield variance is
 persistent differences *between* counties — some counties simply grow more corn
 than others, every year. A model can score well on that panel largely by
-recognising which county it is looking at, without predicting weather effects at
+recognizing which county it is looking at, without predicting weather effects at
 all. The current work therefore compares each model against a baseline that
 predicts each county's own historical average, and reports results with and
 without the long-run upward trend removed.
@@ -148,7 +148,7 @@ Weather explains 68.5% of the year-to-year variation in rainfed yields, but only
 |---|---|---|---|
 | Precipitation | +32.95 | +3.31 | 0.19 |
 | Extreme heat | −21.61 | −5.74 | 0.51 |
-| Vapour pressure deficit | −73.44 | −17.02 | 0.45 |
+| Vapor pressure deficit | −73.44 | −17.02 | 0.45 |
 
 Irrigated fields yielded 81.4 BU/AC more on average.
 
@@ -163,7 +163,7 @@ counties, not an experiment.
 Soil has one value per county and never changes, so a model given soil could in
 principle just use it to identify the county. To test that, the soil features
 were swapped for four random numbers held constant per county — anything the
-model gains from those is pure county-labelling. Real soil beat that control by 7
+model gains from those is pure county-labeling. Real soil beat that control by 7
 to 13 times.
 
 That is evidence soil contributes more than a county label, though it does not
