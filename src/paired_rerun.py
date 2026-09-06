@@ -92,7 +92,7 @@ def main() -> None:
     log.info(f"  {'crop':<24}{'train':>8}{'test':>7}{'poster':>9}"
              f"{'current':>9}{'delta':>9}{'seed sd':>9}")
 
-    rows = []
+    rows, year_sse = [], {}
     for crop in sorted(m["crop"].unique()):
         c = m[m["crop"] == crop]
         years = sorted(c["year"].unique())
@@ -122,6 +122,19 @@ def main() -> None:
         row["delta"] = round(row["r2_new"] - row["r2_old"], 4)
         rows.append(row)
 
+        # Per-year squared error. A near-zero pooled delta can hide large
+        # opposing year-level changes -- oats is exactly that case.
+        for tag in ("old", "new"):
+            cols = [f + f"_{tag}" for f in FEATURES]
+            per_seed = []
+            for seed in SEEDS:
+                mdl = RandomForestRegressor(random_state=seed, **RF_PARAMS)
+                mdl.fit(tr[cols], tr["yield_value_new"])
+                e2 = (te["yield_value_new"].to_numpy() - mdl.predict(te[cols])) ** 2
+                per_seed.append(pd.Series(e2, index=te["year"].to_numpy())
+                                .groupby(level=0).sum())
+            year_sse[(crop, tag)] = pd.concat(per_seed, axis=1).mean(axis=1)
+
         log.info(f"  {crop:<24}{len(tr):>8,}{len(te):>7,}{row['r2_old']:>9.4f}"
                  f"{row['r2_new']:>9.4f}{row['delta']:>+9.4f}"
                  f"{max(row['sd_old'], row['sd_new']):>9.4f}")
@@ -129,6 +142,26 @@ def main() -> None:
     out = pd.DataFrame(rows)
     OUT_DIR.mkdir(exist_ok=True)
     out.to_csv(OUT_DIR / "paired_rerun.csv", index=False)
+
+    # ---- per-year breakdown -------------------------------------------
+    yrows = []
+    for (crop, tag), ser in year_sse.items():
+        for y, v in ser.items():
+            yrows.append({"crop": crop, "year": int(y), "dataset": tag,
+                          "sse": round(float(v), 1)})
+    ydf = (pd.DataFrame(yrows)
+             .pivot_table(index=["crop", "year"], columns="dataset", values="sse")
+             .reset_index())
+    ydf["sse_change"] = (ydf["new"] - ydf["old"]).round(1)
+    counts = m.groupby(["crop", "year"]).size().rename("n").reset_index()
+    ydf = ydf.merge(counts, on=["crop", "year"], how="left")
+    ydf.to_csv(OUT_DIR / "paired_rerun_by_year.csv", index=False)
+
+    log.info("\n  PER-YEAR squared error (pooled deltas can hide this):")
+    log.info(f"  {'crop':<24}{'year':>6}{'n':>6}{'SSE old':>12}{'SSE new':>12}{'change':>12}")
+    for _, r in ydf.iterrows():
+        log.info(f"  {r['crop']:<24}{int(r['year']):>6}{int(r['n']):>6}"
+                 f"{r['old']:>12.1f}{r['new']:>12.1f}{r['sse_change']:>+12.1f}")
 
     worst_sd = out[["sd_old", "sd_new"]].to_numpy().max()
     log.info(f"\n  largest seed sd across all fits: {worst_sd:.4f}")

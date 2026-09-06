@@ -26,6 +26,7 @@ revisits is chiefly how the models are *scored*.
 |---|---|
 | [`src/HANDOFF.md`](src/HANDOFF.md) | Findings, methods, and a log of retracted claims |
 | [`src/ASSESSOR_BRIEF.md`](src/ASSESSOR_BRIEF.md) | Open design questions for independent review |
+| [`src/ABLATION_PREREGISTRATION.md`](src/ABLATION_PREREGISTRATION.md) | Design and decision rule for the preprocessing ablation, fixed in advance |
 | [`archive/README.md`](archive/README.md) | What is wrong with the poster-era material |
 
 ---
@@ -186,13 +187,28 @@ poster's own model on the same rows using each dataset's features (5 seeds):
 | Oats | 1,199 / 156 | 0.387 | 0.387 | −0.000 |
 
 Seed spread is ≤0.011, so corn and soybeans sit well outside noise — about a 20%
-reduction in squared error. **Which** change is responsible (masking, soil depth
-and product, season definition, native scales, added features) has not been
-isolated; that needs an ablation with rows held fixed.
+reduction in squared error, and they improve in *every* test year rather than
+one. **Which** change is responsible (masking, soil depth and product, season
+definition, native scales) has not been isolated; that needs an ablation with
+rows held fixed, pre-registered in
+[`src/ABLATION_PREREGISTRATION.md`](src/ABLATION_PREREGISTRATION.md).
+
+**Oats shows why pooled scores need a per-year breakdown.** Its −0.0001 is not
+stability: 2023 deteriorates by 1,960 SSE while 2024 improves by 1,945 on just
+*eight* observations, and the sign of the pooled delta flips across seeds. Full
+breakdown in `results_matched/paired_rerun_by_year.csv`.
 
 Similar headline scores across *unmatched* samples therefore concealed a material
 difference in predictive performance. That, rather than any insensitivity of the
 metric, is what the comparison actually shows.
+
+On positioning: trend-aware benchmarking in agricultural ML is **not** new —
+[Paudel et al. (2022)](https://doi.org/10.1016/j.fcr.2021.108377) compares
+regional ML forecasts against a linear-trend model across 35 crop-country cases,
+and [CY-Bench](https://doi.org/10.5194/essd-18-3997-2026) provides reproducible
+sub-national benchmarking infrastructure. Neither settles whether a controlled
+preprocessing ablation is novel, but any claim that trend baselines are
+"routinely absent" would be wrong.
 
 ---
 
