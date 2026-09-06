@@ -111,17 +111,33 @@ consequential:
 - **A placebo that tested the wrong contrast**, which reversed a headline
   conclusion once corrected.
 
-**These corrections barely move the poster's headline number.** Corn's test R²
-is 0.764 on the old, defective data and **0.772** on the corrected data; the
-"+74% improvement over climate-only" becomes +82%. The poster reported its own
-results accurately (both figures reconcile exactly to
-[`archive/results_agu/`](archive/results_agu/)), and correcting an inverted crop
-mask, unnormalised precipitation and an inert soil mask does not overturn them.
+**For the two largest crops, these corrections barely move the poster's headline
+number.** Re-running the poster's exact configuration — its 14 features, its
+2010 start, its split rule, its hyperparameters and seed — on fully corrected
+data ([`src/matched_rerun.py`](src/matched_rerun.py), so that only the *data*
+differs):
 
-That is itself the central result of this repository. A headline metric that is
-this insensitive to defects of that size is not measuring what it appears to
-measure — see Findings below. What overturns the poster's conclusion is not the
-data corrections but the change of evaluation protocol.
+| crop | n | poster | corrected data | Δ |
+|---|---|---|---|---|
+| Corn | 11,570 | 0.764 | **0.753** | −0.011 |
+| Soybeans | 11,091 | 0.692 | **0.769** | +0.077 |
+| Spring wheat | 1,400 | 0.694 | 0.589 | −0.105 |
+| Oats | 2,716 | 0.448 | 0.389 | −0.059 |
+| Sorghum | 1,134 | 0.480 | 0.228 | −0.252 |
+
+Corn moves by 0.011 after correcting a crop mask that had averaged vegetation
+indices over *non*-farmland for 11 of 18 years. The poster reported its own
+results accurately (both its figures reconcile exactly to
+[`archive/results_agu/`](archive/results_agu/)).
+
+A metric that barely notices defects of that size, on the crops with the most
+data, is not measuring what it appears to measure — see Findings below. What
+overturns the poster's conclusion is not the data corrections but the change of
+evaluation protocol.
+
+The small-sample crops behave differently: sorghum (n = 1,134) moves by 0.252.
+The insensitivity claim is therefore made **for the large-sample crops only**,
+and the divergence at small n is reported rather than averaged away.
 
 ---
 

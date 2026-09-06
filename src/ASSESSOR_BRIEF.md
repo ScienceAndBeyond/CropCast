@@ -35,6 +35,7 @@ cd <repo>/src                                       # paths are relative to here
 python -X utf8 ml.py                                # ~25 min -> ../results
 python -X utf8 evaluate.py --detrend none county    # ~25 min -> ../results
 python -X utf8 irrigation_contrast.py               # ~1 min  -> ../results_split
+python -X utf8 matched_rerun.py                     # ~2 min  -> ../results_matched
 ```
 
 **Do not run two of these at once** — they write to fixed paths and will race.
@@ -55,14 +56,29 @@ Each says where its numbers live, so you can check them directly.
 
 *Source: `archive/results_agu/model_performance.csv` vs `results/model_performance.csv`.*
 
+*Also: `results_matched/matched_vs_poster.csv`, produced by `src/matched_rerun.py`.*
+
 Correcting an inverted CDL crop mask (vegetation indices averaged over
 *non*-farmland for 2013–2023), season-total rather than per-day precipitation,
-and a soil mask covering essentially the whole county, changes corn's
-`all_features` test R² from **0.764 to 0.772**. Mean "+% improvement over
-climate-only" goes from 74.1% to 81.9%.
+and a soil mask covering essentially the whole county, barely changes the test
+R² of the two largest crops.
 
-**This is the central claim of the paper and the one most likely to be wrong.**
-See §4.1 — it is not a controlled comparison, and we know it.
+A **controlled** comparison is available: `matched_rerun.py` applies the
+poster's exact configuration (its 14 features, 2010 start, split rule,
+hyperparameters and seed 25) to the corrected data, so that only the data
+differs. `all_features` test R²:
+
+| crop | n | poster | corrected data | Δ |
+|---|---|---|---|---|
+| CORN | 11,570 | 0.764 | 0.753 | −0.011 |
+| SOYBEANS | 11,091 | 0.692 | 0.769 | +0.077 |
+| WHEAT_SPRING | 1,400 | 0.694 | 0.589 | −0.105 |
+| OATS | 2,716 | 0.448 | 0.389 | −0.059 |
+| SORGHUM | 1,134 | 0.480 | 0.228 | −0.252 |
+
+The claim is therefore made **for large-sample crops only**. Small-sample crops
+diverge substantially, sorghum most of all. **This is the central claim of the
+paper and the one most likely to be wrong** — see §4.1.
 
 ### Claim B — the apparent skill decomposes into county identity, trend, and a same-season outcome
 
@@ -118,13 +134,26 @@ can do.** The two runs differ in more than data quality:
 | crop panel | 6 (incl. upland cotton) | 5 |
 | seeds averaged | 1 | 5 |
 
-So "the corrections did not matter" is *suggested*, not demonstrated. Is the
-claim salvageable as stated? What is the minimum experiment that would establish
-it? We believe the decisive one is the mirror image — run the **current
-evaluation protocol on the poster-era data** in `archive/data_agu/processed/` —
-but we have not run it. Would that settle it, or is a matched re-run of the
-corrected data on the poster's exact split also needed? Or is the comparison
-unsalvageable, so the claim should be dropped?
+**UPDATE 2026-09-06: this confound has been addressed, and the claim narrowed
+as a result.** `src/matched_rerun.py` re-runs the poster's exact configuration
+on corrected data, so only the data differs. Corn moves −0.011 and soybeans
++0.077, but sorghum moves −0.252. Claim A is now stated for large-sample crops
+only. Reproduce with `python -X utf8 matched_rerun.py` from `src/`.
+
+What we still want from you:
+
+- Is the matched design actually matched? We hold features, years, split rule,
+  hyperparameters and seed fixed. Have we missed a difference that matters?
+- We cap the corrected data at 2024 so the 80:20 rule lands on the poster's own
+  2022–2024 test window. Is capping legitimate, or does it cherry-pick?
+- Single seed (25) on both sides, as the poster used. Corn's Δ of 0.011 is
+  small — is it inside seed noise, and does that *strengthen* the insensitivity
+  claim or make it untestable at this sample size?
+- Sorghum moves 0.252 while corn moves 0.011. Is "insensitive at large n,
+  unstable at small n" a coherent claim, or does the sorghum result undercut
+  the whole framing?
+- Is the mirror experiment — the current protocol on poster-era data in
+  `archive/data_agu/processed/` — still worth running, or is it now redundant?
 
 **4.2 Is `skill_vs_county_mean` the right null?** Defined as
 `1 − SSE(model)/SSE(county mean)`. Alternatives: climatology, county-mean-plus-
