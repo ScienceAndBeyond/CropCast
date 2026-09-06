@@ -1,29 +1,29 @@
 """
-Paired re-run: poster-era data vs current data, on IDENTICAL county-years.
+Does the current data pipeline predict better than the archived 2025 one?
 
-WHY THIS EXISTS
----------------
-`matched_rerun.py` (now superseded) applied the poster's configuration to the
-current data and found corn moved only -0.011. That was misleading: the current
-dataset has more eligible county-years, so corn trained on 9,374 rows against
-the poster's 5,448 and was scored on a different test set. R2's denominator
-changed with the sample, so the comparison could not isolate the data.
+Compares the two processed datasets on IDENTICAL county-years. Both pipelines
+cover overlapping counties and years but produce different feature values, and
+the current one admits more eligible rows. Scoring each on its own sample would
+compare R2 values with different denominators, so this script intersects them
+on (crop, county_fips, year), checks the yield values agree, and trains the
+same model on the SAME rows using each dataset's features in turn. The only
+thing that differs is which dataset supplied the feature values.
 
-This script removes that confound properly. It intersects the two processed
-tables on (crop, county_fips, year), checks the yield values agree, and trains
-the poster's own model on the SAME rows using each dataset's version of the
-poster's 14 features. The only thing that differs is which dataset supplied the
-feature values.
+Model and features are the archived pipeline's, so the comparison is not
+flattered by later modelling changes.
 
 WHAT IT DOES NOT SHOW
 ---------------------
-It does not attribute the difference to any particular change. Masking, soil
-product and depth, season definition, spatial scale and feature derivation all
-differ between the two datasets. Isolating them needs an ablation that rebuilds
-one input at a time with rows held fixed.
+It does not attribute the difference to any single change. Crop masking, soil
+product and depth, season definition and spatial scale all differ between the
+two datasets. Isolating them requires an ablation that rebuilds one input at a
+time with rows held fixed.
+
+Pooled scores are reported alongside a per-year breakdown, because a near-zero
+pooled difference can hide large opposing year-level changes.
 
 Run from src/:  python -X utf8 paired_rerun.py     (~3 min)
-Writes ../results_matched/paired_rerun.csv and touches nothing else.
+Writes ../results_comparison/ and touches nothing else.
 """
 
 from __future__ import annotations
@@ -36,7 +36,8 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import r2_score
 
-# The poster's 14 features and hyperparameters, from archive/src_agu/ml.py.
+# Features and hyperparameters as used in the archived 2025 pipeline
+# (archive/src/ml.py), so the comparison is not flattered by later changes.
 CLIMATE_FEATURES = ["TMIN", "TMAX", "PRCP", "VPD", "ETO", "SRAD"]
 VEG_FEATURES = ["evi_min_year", "evi_max_year", "ndvi_min_year", "ndvi_max_year"]
 SOIL_FEATURES = ["clay_mean", "ph_mean", "soc_mean", "bdod_mean"]
@@ -50,9 +51,9 @@ MIN_YEARS = 10
 TEST_FRACTION = 0.20
 MIN_TEST_YEARS = 2
 
-OLD_MERGED = Path("../archive/data_agu/processed/merged.csv")
+OLD_MERGED = Path("../archive/data/processed/merged.csv")
 NEW_MERGED = Path("../data/processed/merged.csv")
-OUT_DIR = Path("../results_matched")
+OUT_DIR = Path("../results_comparison")
 
 logging.basicConfig(level=logging.INFO, format="%(message)s")
 log = logging.getLogger(__name__)

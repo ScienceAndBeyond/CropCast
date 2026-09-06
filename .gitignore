@@ -18,6 +18,16 @@ data_raw/
 # ---- run logs
 *.log
 
+# ---- internal working notes, kept local and never published
+src/HANDOFF.md
+src/FIX_HANDOFF.md
+src/ASSESSOR_BRIEF.md
+src/ABLATION_PREREGISTRATION.md
+src/PROVENANCE_NOTES.md
+src/matched_rerun.py
+results_comparison/matched_rerun.csv
+results_comparison/matched_vs_poster.csv
+
 # ---- local-only working material, never published (4.4 GB): poster-era
 # vintages, pre-fix snapshots, superseded root files from before this folder
 # became the repo working tree
