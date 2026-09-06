@@ -4,7 +4,7 @@ County-level crop yield analysis for the US Corn Belt and Northern Plains,
 combining USDA NASS yields, gridMET climate, MODIS vegetation indices and
 OpenLandMap soil properties.
 
-**Arit Prince** · [AGU 2025 poster GC13F-0713](archive/poster/) · New Orleans
+**Arit Prince & Arya Prince** · [AGU 2025 poster GC13F-0713](archive/poster/) · New Orleans
 
 ---
 
@@ -211,7 +211,7 @@ reproducible sub-national crop-yield benchmarking infrastructure.
 ## Citation
 
 ```
-Prince, A. (2025). CropCast: county-level crop yield analysis with climate,
-vegetation and soil data. AGU Fall Meeting 2025, GC13F-0713.
+Prince, A. & Prince, A. (2025). CropCast: county-level crop yield analysis with
+climate, vegetation and soil data. AGU Fall Meeting 2025, GC13F-0713.
 https://github.com/ScienceAndBeyond/CropCast
 ```
