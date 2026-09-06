@@ -37,7 +37,22 @@ Yes, for the two main crops. The rebuilt pipeline keeps more county-years, so sc
 | Spring wheat | 0.175 | 0.208 | +0.033 |
 | Oats | 0.387 | 0.387 | −0.000 |
 
-Corn and soybeans improve in every test year. We have not yet isolated which change earns the improvement, since masking, soil depth, season, and resolution all changed together.
+Corn and soybeans improve in every test year.
+
+### Which change earned it?
+
+Vegetation, almost entirely. `ablation.py` reverts one data source at a time to its archived version while holding the rows, model, and seeds fixed. The metric is the ratio of prediction error to the fully rebuilt model, so a value above 1 means reverting that source made prediction worse. Intervals are 95% from a county-clustered bootstrap, and the design was fixed before running it.
+
+| Reverted source | Corn | Soybeans |
+|-----------------|------|----------|
+| Climate | 1.007 (0.994 to 1.020) | 1.010 (0.998 to 1.023) |
+| Soil | 1.016 (1.003 to 1.030) | 1.027 (1.007 to 1.046) |
+| **Vegetation** | **1.100 (1.065 to 1.134)** | **1.103 (1.075 to 1.133)** |
+| Everything | 1.114 (1.077 to 1.153) | 1.131 (1.096 to 1.167) |
+
+Reverting vegetation alone costs about 10% more prediction error, which is nearly the whole penalty from reverting everything. Climate and soil fall inside a 5% equivalence margin, so their changes made no detectable difference. The vegetation effect holds in every test year rather than resting on one season. Oats shows no effect from any source, and spring wheat is inconclusive on 110 test rows.
+
+We cannot say it was specifically the crop mask. Vegetation changed both its masking and its resolution at the same time, so this shows that vegetation processing mattered and climate and soil did not. Separating the mask from the resolution needs the vegetation data rebuilt through Earth Engine one option at a time.
 
 ---
 
@@ -120,7 +135,8 @@ CropCast/
 │   ├── ml.py                    # Merge and train
 │   ├── evaluate.py              # Baselines and bootstrap intervals
 │   ├── irrigation_contrast.py   # Irrigated vs rainfed corn
-│   └── paired_rerun.py          # Old vs new data on matched rows
+│   ├── paired_rerun.py          # Old vs new data on matched rows
+│   └── ablation.py              # Which source earns the improvement
 │
 ├── data/                        # Not committed, regenerate with the scripts
 ├── results/                     # Model outputs
@@ -159,6 +175,7 @@ python ml.py
 python evaluate.py --detrend none county
 python irrigation_contrast.py
 python paired_rerun.py
+python ablation.py
 ```
 
 ---
@@ -195,7 +212,7 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ## Roadmap
 
-- [ ] Isolate which pipeline change earns the prediction improvement
+- [ ] Separate the vegetation crop mask from the resolution change
 - [ ] Extend the irrigation comparison beyond corn and beyond two states
 - [ ] Crop-specific vegetation masking
 - [ ] Extend the irrigation comparison past 2018 with another data source
