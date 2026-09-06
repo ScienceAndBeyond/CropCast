@@ -22,10 +22,6 @@ revisits is chiefly how the models are *scored*.
 
 **Current code is in [`src/`](src/).**
 
-| Document | What it holds |
-|---|---|
-| [`src/HANDOFF.md`](src/HANDOFF.md) | Findings, methods, and a log of retracted claims |
-| [`src/ASSESSOR_BRIEF.md`](src/ASSESSOR_BRIEF.md) | Open design questions for independent review |
 | [`src/ABLATION_PREREGISTRATION.md`](src/ABLATION_PREREGISTRATION.md) | Design and decision rule for the preprocessing ablation, fixed in advance |
 | [`archive/README.md`](archive/README.md) | What is wrong with the poster-era material |
 
