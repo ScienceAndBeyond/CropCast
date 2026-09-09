@@ -17,6 +17,9 @@ data_raw/
 *.log
 
 # ---- generated paper previews
+paper/build_preprint_pdf.py
+paper/irrigation_weather_coupling.md
+paper/irrigation_weather_coupling.pdf
 paper/*.html
 paper/*.doc
 paper/*.docx

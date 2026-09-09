@@ -23,7 +23,7 @@
 <text x="84.0" y="54.0" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#222222">78</text>
 <line x1="92.0" y1="325.0" x2="472.0" y2="325.0" stroke="#222222" stroke-width="1.2"/>
 <line x1="92.0" y1="50.0" x2="92.0" y2="325.0" stroke="#222222" stroke-width="1.2"/>
-<text x="282.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#222222">PRCP anomaly</text>
+<text x="282.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#222222">PRCP anomaly (mm/day)</text>
 <text x="40.0" y="187.5" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#222222" transform="rotate(-90 40.0 187.5)">Yield anomaly (BU/AC)</text>
 <text x="282.0" y="32.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#222222">Non-irrigated</text>
 <circle cx="321.3" cy="141.8" r="2.1" fill="#0072B2" opacity="0.26"/>
@@ -927,7 +927,7 @@
 <text x="547.0" y="54.0" text-anchor="end" font-family="Arial, Helvetica, sans-serif" font-size="10" font-weight="400" fill="#222222">78</text>
 <line x1="555.0" y1="325.0" x2="935.0" y2="325.0" stroke="#222222" stroke-width="1.2"/>
 <line x1="555.0" y1="50.0" x2="555.0" y2="325.0" stroke="#222222" stroke-width="1.2"/>
-<text x="745.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#222222">PRCP anomaly</text>
+<text x="745.0" y="367.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="#222222">PRCP anomaly (mm/day)</text>
 <text x="745.0" y="32.0" text-anchor="middle" font-family="Arial, Helvetica, sans-serif" font-size="14" font-weight="700" fill="#222222">Irrigated</text>
 <circle cx="784.3" cy="174.2" r="2.1" fill="#D55E00" opacity="0.26"/>
 <circle cx="641.4" cy="173.0" r="2.1" fill="#D55E00" opacity="0.26"/>

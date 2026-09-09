@@ -83,7 +83,7 @@ def fig1_prcp_scatter() -> None:
     ]
 
     for label, x0, color in panels:
-        parts.extend(panel_axes(x0, y0, panel_w, panel_h, xlim, ylim, "PRCP anomaly", "Yield anomaly (BU/AC)" if label == "Non-irrigated" else None))
+        parts.extend(panel_axes(x0, y0, panel_w, panel_h, xlim, ylim, "PRCP anomaly (mm/day)", "Yield anomaly (BU/AC)" if label == "Non-irrigated" else None))
         parts.append(svg_text(x0 + panel_w / 2, y0 - 18, label, 14, weight="700"))
         y = ys[label]
         for xv, yv in zip(x, y):
