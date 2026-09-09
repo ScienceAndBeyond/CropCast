@@ -369,7 +369,11 @@ def merged_filename(mode: str = None) -> str:
 def results_dirname(mode: str = None) -> str:
     """Results directory for a practice mode (see yield_filename)."""
     mode = (mode or NASS_PRACTICE_MODE).lower()
-    return "../results" if mode == "aggregate" else f"../results_{mode}"
+    if mode == "aggregate":
+        return "../results"
+    if mode == "split":
+        return "../irrigation_results"
+    return f"../results_{mode}"
 
 
 def get_practice_filter(mode: str = None) -> list:

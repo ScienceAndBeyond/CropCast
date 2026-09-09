@@ -125,7 +125,7 @@ Irrigated corn in Nebraska shows almost no rainfall response, while Kansas still
 
 This is also a selected sample. Before requiring at least 4 paired years per county, 989 county-years across Kansas, Nebraska, North Dakota, and South Dakota report both practices. North Dakota and South Dakota drop out after that filter. The final result describes counties with repeated reporting of both irrigated and non-irrigated corn, not irrigated versus rainfed corn everywhere.
 
-Full tables are in `results_split/irrigation_leave_one_year_out.csv`, `results_split/irrigation_by_state.csv`, and `results_split/irrigation_state_balanced.csv`.
+Full tables are in `irrigation_results/irrigation_leave_one_year_out.csv`, `irrigation_results/irrigation_by_state.csv`, and `irrigation_results/irrigation_state_balanced.csv`.
 
 ### Soil is doing real work
 
@@ -155,7 +155,9 @@ CropCast/
   data/                Local data, not committed
   data_raw/            Local raw downloads, not committed
   results/             Main model outputs
-  results_split/       Irrigation analysis outputs
+  irrigation_results/  Irrigation study CSV outputs
+  irrigation_weather_yield/
+                       Irrigation study tables, figures, and helper scripts
   results_comparison/  Original-vs-updated pipeline comparison outputs
   archive/             AGU 2025 version, kept unchanged
 ```
@@ -191,6 +193,13 @@ python evaluate.py --detrend none county
 python irrigation_contrast.py
 python paired_rerun.py
 python ablation.py
+```
+
+To rebuild the irrigation study tables and figures from the repo root:
+```bash
+cd ..
+python irrigation_weather_yield/make_irrigation_tables.py
+python irrigation_weather_yield/make_irrigation_figures.py
 ```
 
 Before running the vegetation mask/scale check, build the three extra vegetation versions:

@@ -16,10 +16,11 @@ data_raw/
 # ---- run logs
 *.log
 
-# ---- generated paper previews
-paper/build_preprint_pdf.py
-paper/irrigation_weather_coupling.md
-paper/irrigation_weather_coupling.pdf
-paper/*.html
-paper/*.doc
-paper/*.docx
+# ---- generated manuscript previews
+irrigation_weather_yield/build_preprint_pdf.py
+irrigation_weather_yield/irrigation_weather_coupling.md
+irrigation_weather_yield/irrigation_weather_coupling.pdf
+irrigation_weather_yield/preprint_submission_checklist.md
+irrigation_weather_yield/*.html
+irrigation_weather_yield/*.doc
+irrigation_weather_yield/*.docx

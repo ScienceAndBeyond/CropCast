@@ -1200,7 +1200,7 @@ def main():
     ap.add_argument("--practice-mode", default=NASS_PRACTICE_MODE,
                     choices=["aggregate", "split", "both"],
                     help="Which yield table to model. 'split' reads yield_split.csv "
-                         "and writes ../results_split, leaving the aggregate study intact.")
+                         "and writes ../irrigation_results, leaving the aggregate study intact.")
     ap.add_argument("--results-dir", default=None,
                     help="Override the results directory.")
     args = ap.parse_args()

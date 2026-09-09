@@ -8,8 +8,8 @@ from pathlib import Path
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-RESULTS = ROOT / "results_split"
-FIGURES = ROOT / "paper" / "figures"
+RESULTS = ROOT / "irrigation_results"
+FIGURES = ROOT / "irrigation_weather_yield" / "figures"
 
 BLUE = "#0072B2"
 ORANGE = "#D55E00"
