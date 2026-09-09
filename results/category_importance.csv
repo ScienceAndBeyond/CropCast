@@ -1,0 +1,11 @@
+crop,category,importance,importance_pct,method
+CORN,climate,0.4819,48.2,permutation_test
+CORN,soil,0.5181,51.8,permutation_test
+OATS,climate,0.1884,18.8,permutation_test
+OATS,soil,0.8116,81.2,permutation_test
+SORGHUM,climate,0.9018,90.2,permutation_test
+SORGHUM,soil,0.0982,9.8,permutation_test
+SOYBEANS,climate,0.4466,44.7,permutation_test
+SOYBEANS,soil,0.5534,55.3,permutation_test
+WHEAT_SPRING_EXCL_DURUM,climate,0.5293,52.9,permutation_test
+WHEAT_SPRING_EXCL_DURUM,soil,0.4707,47.1,permutation_test

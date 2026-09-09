@@ -1,0 +1,5 @@
+trend,practice,r2_weather_state_balanced
+none,irrigated,0.2689
+none,non_irrigated,0.6971
+linear,irrigated,0.308
+linear,non_irrigated,0.6993

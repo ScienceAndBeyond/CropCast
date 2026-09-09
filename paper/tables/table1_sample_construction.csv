@@ -1,0 +1,6 @@
+state,complete_same_county_year_pairs,after_climate_join_and_coverage,after_min_4_paired_years,counties_after_filter
+KS,264,264,202,36
+ND,10,10,0,0
+NE,681,681,665,78
+SD,34,34,0,0
+Total,989,989,867,114

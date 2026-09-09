@@ -1,0 +1,5 @@
+weather,slope_rainfed,slope_irrigated,ratio_abs_slope,corr_rainfed,corr_irrigated,ratio_abs_corr,rainfed_lo,rainfed_hi,irrigated_lo,irrigated_hi
+PRCP,32.95,3.306,0.1,0.731,0.142,0.194,30.507,35.541,1.617,5.158
+EDD_TMAX,-21.609,-5.74,0.266,-0.736,-0.378,0.513,-22.947,-20.317,-7.033,-4.622
+VPD,-73.442,-17.017,0.232,-0.787,-0.352,0.448,-77.524,-69.218,-20.974,-13.407
+TMAX,-13.391,-3.346,0.25,-0.749,-0.362,0.483,-14.09,-12.692,-4.009,-2.714

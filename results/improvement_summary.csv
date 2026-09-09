@@ -1,0 +1,6 @@
+crop,climate_only_r2,causal_r2,best_r2,county_mean_baseline_r2,best_skill_vs_county_mean,causal_improvement,best_improvement,causal_pct_improvement,best_pct_improvement,pct_suppressed_low_baseline
+CORN,0.355,0.573,0.772,0.412,0.612,0.218,0.417,61.4,117.5,False
+OATS,-0.043,0.298,0.367,0.287,0.112,0.341,0.41,,,True
+SORGHUM,0.295,0.267,0.397,0.125,0.31,-0.028,0.102,-9.5,34.6,False
+SOYBEANS,0.407,0.621,0.763,0.554,0.467,0.214,0.356,52.6,87.5,False
+WHEAT_SPRING_EXCL_DURUM,0.311,0.439,0.585,0.446,0.252,0.128,0.274,41.2,88.1,False

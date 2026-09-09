@@ -1,0 +1,22 @@
+# ---- secrets and local settings
+.env
+*.env
+!.env.example
+
+# ---- environment
+.venv/
+__pycache__/
+*.py[cod]
+.idea/
+
+# ---- large, regenerable data
+data/
+data_raw/
+
+# ---- run logs
+*.log
+
+# ---- generated paper previews
+paper/*.html
+paper/*.doc
+paper/*.docx

@@ -1,0 +1,5 @@
+weather,selected_county_mean_2012,rank_extreme_2008_2025,rank_direction,n_years
+PRCP,1.503,1,lowest is rank 1,18
+EDD_TMAX,3.9306,1,highest is rank 1,18
+VPD,2.0464,1,highest is rank 1,18
+TMAX,30.6173,1,highest is rank 1,18

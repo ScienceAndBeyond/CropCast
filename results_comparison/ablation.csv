@@ -1,0 +1,21 @@
+crop,arm,rmse,q,q_lo,q_hi,verdict,n_test,verdict_2pct,verdict_10pct
+CORN,all_new,16.385,1.0,,,reference,900,,
+CORN,climate_old,16.496,1.0068,0.9944,1.0202,equivalent,900,inconclusive,equivalent
+CORN,veg_old,18.016,1.0996,1.0647,1.1342,reverting HURTS (change matters),900,reverting HURTS (change matters),inconclusive
+CORN,soil_old,16.654,1.0164,1.0034,1.03,equivalent,900,inconclusive,equivalent
+CORN,all_old,18.259,1.1144,1.0766,1.1533,reverting HURTS (change matters),900,reverting HURTS (change matters),inconclusive
+OATS,all_new,15.986,1.0,,,reference,156,,
+OATS,climate_old,15.747,0.9851,0.9543,1.0196,equivalent,156,inconclusive,equivalent
+OATS,veg_old,16.043,1.0036,0.9746,1.0319,equivalent,156,inconclusive,equivalent
+OATS,soil_old,16.12,1.0083,0.9893,1.0299,equivalent,156,inconclusive,equivalent
+OATS,all_old,15.985,0.9999,0.955,1.0448,equivalent,156,inconclusive,equivalent
+SOYBEANS,all_new,5.229,1.0,,,reference,865,,
+SOYBEANS,climate_old,5.284,1.0105,0.9984,1.0235,equivalent,865,inconclusive,equivalent
+SOYBEANS,veg_old,5.766,1.1026,1.0747,1.1327,reverting HURTS (change matters),865,reverting HURTS (change matters),inconclusive
+SOYBEANS,soil_old,5.371,1.0272,1.0071,1.0462,equivalent,865,inconclusive,equivalent
+SOYBEANS,all_old,5.916,1.1313,1.0955,1.1675,reverting HURTS (change matters),865,reverting HURTS (change matters),inconclusive
+WHEAT_SPRING_EXCL_DURUM,all_new,9.411,1.0,,,reference,110,,
+WHEAT_SPRING_EXCL_DURUM,climate_old,9.566,1.0165,0.9898,1.0474,equivalent,110,inconclusive,equivalent
+WHEAT_SPRING_EXCL_DURUM,veg_old,9.218,0.9795,0.9568,1.0006,equivalent,110,inconclusive,equivalent
+WHEAT_SPRING_EXCL_DURUM,soil_old,9.747,1.0357,1.0124,1.0619,inconclusive,110,inconclusive,equivalent
+WHEAT_SPRING_EXCL_DURUM,all_old,9.605,1.0206,0.9786,1.0624,inconclusive,110,inconclusive,equivalent

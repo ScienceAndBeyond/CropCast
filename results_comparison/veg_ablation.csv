@@ -1,0 +1,21 @@
+crop,arm,mask,scale_m,rmse,q,q_lo,q_hi,verdict,n_test,verdict_2pct,verdict_10pct
+CORN,production,on,926.63,16.385,1.0,,,reference,900,,
+CORN,masked_1km,on,1000.0,16.504,1.0073,1.0001,1.0149,equivalent,900,equivalent,equivalent
+CORN,unmasked_native,off,926.63,17.8,1.0864,1.0523,1.1201,materially worse,900,materially worse,inconclusive
+CORN,unmasked_1km,off,1000.0,17.82,1.0876,1.0536,1.1214,materially worse,900,materially worse,inconclusive
+CORN,archived,off,1000.0,18.016,1.0996,1.0647,1.1342,materially worse,900,materially worse,inconclusive
+OATS,production,on,926.63,15.986,1.0,,,reference,156,,
+OATS,masked_1km,on,1000.0,15.981,0.9997,0.9925,1.0069,equivalent,156,equivalent,equivalent
+OATS,unmasked_native,off,926.63,16.278,1.0183,0.9967,1.042,equivalent,156,inconclusive,equivalent
+OATS,unmasked_1km,off,1000.0,16.229,1.0152,0.9925,1.0382,equivalent,156,inconclusive,equivalent
+OATS,archived,off,1000.0,16.043,1.0036,0.9746,1.0319,equivalent,156,inconclusive,equivalent
+SOYBEANS,production,on,926.63,5.229,1.0,,,reference,865,,
+SOYBEANS,masked_1km,on,1000.0,5.293,1.0122,1.0052,1.0188,equivalent,865,equivalent,equivalent
+SOYBEANS,unmasked_native,off,926.63,5.763,1.1021,1.0756,1.1292,materially worse,865,materially worse,inconclusive
+SOYBEANS,unmasked_1km,off,1000.0,5.763,1.1021,1.0767,1.1282,materially worse,865,materially worse,inconclusive
+SOYBEANS,archived,off,1000.0,5.766,1.1026,1.0747,1.1327,materially worse,865,materially worse,inconclusive
+WHEAT_SPRING_EXCL_DURUM,production,on,926.63,9.411,1.0,,,reference,110,,
+WHEAT_SPRING_EXCL_DURUM,masked_1km,on,1000.0,9.398,0.9986,0.9944,1.003,equivalent,110,equivalent,equivalent
+WHEAT_SPRING_EXCL_DURUM,unmasked_native,off,926.63,9.393,0.9982,0.9841,1.0131,equivalent,110,equivalent,equivalent
+WHEAT_SPRING_EXCL_DURUM,unmasked_1km,off,1000.0,9.373,0.996,0.9828,1.0108,equivalent,110,equivalent,equivalent
+WHEAT_SPRING_EXCL_DURUM,archived,off,1000.0,9.218,0.9795,0.9568,1.0006,equivalent,110,inconclusive,equivalent

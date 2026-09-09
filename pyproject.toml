@@ -1,0 +1,20 @@
+[project]
+name = "climate"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    # Earth Engine. NOTE: the PyPI package is "earthengine-api"; it provides the
+    # `ee` module. A bare "ee" dependency resolves to an unrelated package
+    # ("A wrapper for dd") and makes every GEE download fail at import.
+    "earthengine-api>=1.1",
+    "geopandas>=1.1.4",
+    "numpy>=2.5.2",
+    "pandas>=2.2",
+    "pandas-stubs~=3.0.5",
+    "pygris>=0.1.6",        # county geometries / FIPS
+    "python-dotenv>=1.0",   # config.py reads .env
+    "rasterio>=1.5.1",
+    "requests>=2.32",       # download_yield.py (USDA NASS API)
+    "scikit-learn>=1.6",    # ml.py, evaluate.py
+    "tenacity>=9.0",        # retry logic in the downloaders
+]
