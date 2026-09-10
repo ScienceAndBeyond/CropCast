@@ -243,6 +243,17 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ---
 
+## Progress Since AGU
+
+Some items from the original roadmap are partly addressed in this version:
+
+- The single April-September growing season was replaced with state-specific growing seasons.
+- Vegetation and soil averages are now restricted to cropland, but not yet to a crop-specific mask.
+- Irrigation is now tested using paired USDA NASS irrigated and non-irrigated corn reports for Kansas and Nebraska. It does not use USGS irrigation data and does not go past 2018.
+- Soil is checked against a simple county-level placebo control. A stronger repeated placebo check is still open.
+
+---
+
 ## Roadmap
 
 These are still open items.
