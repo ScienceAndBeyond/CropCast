@@ -18,8 +18,8 @@ data_raw/
 
 # ---- generated manuscript previews
 irrigation_weather_yield/build_preprint_pdf.py
-irrigation_weather_yield/irrigation_weather_coupling.md
-irrigation_weather_yield/irrigation_weather_coupling.pdf
+irrigation_weather_yield/irrigation_weather_yield_links_kansas_nebraska_2008_2018.md
+irrigation_weather_yield/irrigation_weather_yield_links_kansas_nebraska_2008_2018.pdf
 irrigation_weather_yield/preprint_submission_checklist.md
 irrigation_weather_yield/*.html
 irrigation_weather_yield/*.doc
