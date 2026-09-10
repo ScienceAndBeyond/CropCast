@@ -106,7 +106,7 @@ def fig1_prcp_scatter() -> None:
         for px, py in pts:
             parts.append(f'<circle cx="{px:.1f}" cy="{py:.1f}" r="4.2" fill="{color}" stroke="{BG}" stroke-width="1"/>')
 
-    parts.append(svg_text(width / 2, height - 22, "Points are paired county-years; lines connect decile means.", 11))
+    parts.append(svg_text(width / 2, height - 22, "Points are paired county-years; lines connect 10-bin averages.", 11))
     parts.append("</svg>")
     (FIGURES / "figure1_prcp_yield_anomalies.svg").write_text("\n".join(parts) + "\n", encoding="utf-8")
 
