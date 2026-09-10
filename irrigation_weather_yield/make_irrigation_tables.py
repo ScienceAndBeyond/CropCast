@@ -174,7 +174,7 @@ def write_outputs() -> None:
         f"the gap before removing the year trend moves from {loo_none.loc['none', 'r2_gap']:.3f} to "
         f"{loo_none.loc['2012', 'r2_gap']:.3f}.",
         "- Among the 114 selected counties, 2012 ranks as the most extreme "
-        "year in the 2008-2025 local climate record for all four weather variables.",
+        "year in the available 2008-2025 local climate record for all four weather variables.",
         "",
         "Tables written to `irrigation_weather_yield/tables/`, including county-bootstrap slope intervals.",
     ]

@@ -112,7 +112,7 @@ The slope ratio compares irrigated to rainfed on the units shown. The correlatio
 
 Irrigated fields yielded 81.4 BU/AC more on average.
 
-**Drought years carry most of the gap.** We reran the analysis while dropping one year at a time. Every dropped year leaves the result roughly the same except 2012. These are the trend-removed numbers: dropping 2012 cuts the rainfed number from 0.699 to 0.321, while the irrigated number barely changes. The gap falls from 0.45 to 0.05. The headline 68.5% and 16.6% numbers above are not trend-removed; in that version, dropping 2012 moves the gap from 0.52 to 0.16. Across these 114 counties, 2012 is the driest and hottest year in the full 2008-2025 climate record used here. So the result is real, but it depends strongly on one historic drought year. This is an association, not a randomized experiment.
+**Drought years carry most of the gap.** We reran the analysis while dropping one year at a time. Every dropped year leaves the result roughly the same except 2012. These are the trend-removed numbers: dropping 2012 cuts the rainfed number from 0.699 to 0.321, while the irrigated number barely changes. The gap falls from 0.45 to 0.05. The headline 68.5% and 16.6% numbers above are not trend-removed; in that version, dropping 2012 moves the gap from 0.52 to 0.16. Across these 114 counties, 2012 is the driest and hottest year in the available 2008-2025 climate record used here. So the result is real, but it depends strongly on one historic drought year. This is an association, not a randomized experiment.
 
 **The two states differ, and Nebraska has more say in the combined number because it has more data.** Nebraska supplies 665 of the 867 pairs (77%) and Kansas 202.
 
