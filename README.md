@@ -272,6 +272,14 @@ Comparing crop yield models against a trend baseline is established practice. Se
 
 ---
 
+## License
+
+Code in this repository is released under the MIT License. The processed data
+tables are derived from public data sources listed above; users should also
+cite those original sources when reusing the data.
+
+---
+
 ## Authors
 
 - Arit Prince
@@ -290,6 +298,6 @@ Questions or ideas?
 If you use this, a citation would be appreciated:
 
 ```
-Prince, Arit. & Prince, Arya. (2025). CropCast: Multi-source crop yield prediction.
+Prince, Arit. & Prince, Arya. (2026). CropCast: Multi-source crop yield prediction.
 GitHub: https://github.com/ScienceAndBeyond/CropCast
 ```

@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it."
+title: "CropCast: Multi-source crop yield prediction"
+authors:
+  - family-names: Prince
+    given-names: Arit
+    orcid: "https://orcid.org/0009-0006-2610-4440"
+  - family-names: Prince
+    given-names: Arya
+year: 2026
+repository-code: "https://github.com/ScienceAndBeyond/CropCast"
+license: MIT

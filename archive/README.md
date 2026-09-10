@@ -1,12 +1,12 @@
 # CropCast - AGU 2025 archive
 
-This folder holds the project exactly as presented at AGU 2025 (poster
-GC13F-0713). Nothing in it has been edited.
+This folder preserves the project files used for the AGU 2025 poster
+GC13F-0713.
 
 **These results are superseded.** Both the data pipeline and the way models are
 scored have changed since this version. See the [current README](../README.md).
 
-The original README is preserved verbatim as
+The original README is preserved as
 [`ORIGINAL_README.md`](ORIGINAL_README.md).
 
 ## Contents
