@@ -245,10 +245,12 @@ AGU 2025, New Orleans poster presentation (GC13F-0713).
 
 ## Roadmap
 
+These are still open items.
+
 - [ ] Understand why Minnesota corn reverses (mask removal helps there, hurts elsewhere)
 - [ ] Crop-specific masks, so corn NDVI excludes soybean fields
-- [ ] Extend the irrigation comparison beyond corn and beyond two states
-- [ ] Repeated, covariance-matched soil placebo controls instead of one random draw
+- [ ] Extend the irrigation comparison beyond corn and beyond Kansas and Nebraska
+- [ ] Stronger soil placebo checks that better match county-to-county patterns, instead of one random draw
 - [ ] Extend the irrigation comparison past 2018 with another data source
 
 ---
