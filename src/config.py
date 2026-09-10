@@ -23,7 +23,7 @@ logging.basicConfig(
 # PATHS
 # ---------------------------------------------------------------------------
 DATA_PATH = Path("../data")
-DATA_PATH_RAW = Path("../data_raw")
+DATA_PATH_RAW = Path("../data/raw")
 
 COUNTY_SHAPEFILE = "https://www2.census.gov/geo/tiger/GENZ2022/shp/cb_2022_us_county_500k.zip"
 

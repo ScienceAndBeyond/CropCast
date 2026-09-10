@@ -183,7 +183,7 @@ def get_monthly_vegetation_stats(
     # QA is selected alongside the indices so poor pixels can be masked.
     # MOD13A3 is already a monthly composite, so measured contamination is
     # small: 0.03% of ALL county-months (including winter dormancy) fall
-    # below NDVI 0.10 (81 of 305,046, data_raw/vegetation_monthly.csv);
+    # below NDVI 0.10 (81 of 305,046, data/raw/vegetation_monthly.csv);
     # restricting to in-season months only would lower this further, not
     # raise it. Masking is cheap and makes the product defensible rather
     # than merely lucky.

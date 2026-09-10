@@ -26,7 +26,7 @@ matches what the AGU poster claimed was being used.
 
 Outputs:
 - processed/soil.csv                        (final county table)
-- data_raw/soil_cropland_checkpoint.json    (checkpoint for states)
+- data/raw/soil_cropland_checkpoint.json    (checkpoint for states)
 
 Run:
   python download_soil.py
