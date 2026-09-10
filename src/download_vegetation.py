@@ -514,6 +514,8 @@ def main():
                              "checkpoint instead of the production files. "
                              "Required whenever --no-crop-mask or --scale is set, "
                              "so an ablation run cannot overwrite real data.")
+    parser.add_argument("--aggregate-only", action="store_true",
+                        help="Rebuild the yearly processed file from the local monthly raw file.")
 
     args = parser.parse_args()
 
@@ -534,6 +536,24 @@ def main():
                  f"output: {YEARLY_OUTPUT_FILE.name}")
     states = resolve_states(args.states, args.study)
     resume = args.resume and not args.no_resume
+
+    if args.aggregate_only:
+        if not MONTHLY_OUTPUT_FILE.exists():
+            raise FileNotFoundError(
+                f"{MONTHLY_OUTPUT_FILE} not found. Run without --aggregate-only first."
+            )
+        monthly_df = pd.read_csv(MONTHLY_OUTPUT_FILE, dtype={"county_fips": str})
+        yearly_df = aggregate_to_yearly(monthly_df)
+        cols = [
+            "state_fips", "state_abbr", "county_fips", "county_name", "year",
+            "ndvi_mean_year", "ndvi_min_year", "ndvi_max_year",
+            "evi_mean_year", "evi_min_year", "evi_max_year", "n_months",
+        ]
+        yearly_df = yearly_df[[c for c in cols if c in yearly_df.columns]]
+        PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
+        yearly_df.to_csv(YEARLY_OUTPUT_FILE, index=False)
+        logging.info(f"Wrote yearly file: {YEARLY_OUTPUT_FILE} ({len(yearly_df):,} rows)")
+        return
 
     authenticate_gee()
 

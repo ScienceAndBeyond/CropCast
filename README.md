@@ -162,7 +162,7 @@ CropCast/
   archive/             AGU 2025 version, kept unchanged
 ```
 
-The committed processed CSVs are enough to rerun the irrigation analysis and rebuild its reported tables and figures. The full yield-prediction pipeline needs the download steps below first. Raw and processed data paths are set in `src/config.py`. Climate and vegetation are downloaded monthly first when rebuilding from raw sources. The growing-season values are built afterward, so the season can be changed without downloading everything again.
+The committed processed CSVs are enough to run the default yield-prediction pipeline, rerun the irrigation analysis, and rebuild the reported irrigation tables and figures. `ml.py` rebuilds `data/processed/merged.csv` locally. Raw and processed data paths are set in `src/config.py`. Climate and vegetation are downloaded monthly first when rebuilding from raw sources. The growing-season values are built afterward, so the season can be changed without downloading everything again.
 
 ---
 
@@ -176,7 +176,7 @@ cp src/.env.example src/.env    # add your API keys
 cd src
 ```
 
-To download fresh data:
+To rebuild fresh data from the original sources:
 ```bash
 python download_yield.py
 python download_soil.py
@@ -186,7 +186,7 @@ python download_climate.py
 
 Run these one at a time. Earth Engine limits concurrent requests.
 
-After downloading fresh data, train and evaluate the full yield-prediction pipeline:
+To train and evaluate the default yield-prediction pipeline from the committed processed CSVs:
 ```bash
 python ml.py
 python evaluate.py --detrend none county
@@ -212,6 +212,11 @@ python download_vegetation.py --study --scale 1000 --variant masked_1km
 python download_vegetation.py --study --no-crop-mask --variant unmasked_native
 python download_vegetation.py --study --no-crop-mask --scale 1000 --variant unmasked_1km
 python veg_ablation.py
+```
+
+If the monthly vegetation raw file already exists locally, rebuild only the processed yearly vegetation table with:
+```bash
+python download_vegetation.py --aggregate-only
 ```
 
 ---
