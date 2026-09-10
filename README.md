@@ -152,7 +152,7 @@ Soil has one value per county and does not change over time. That means a model 
 ```text
 CropCast/
   src/                 Code for download, training, evaluation, and checks
-  data/                Local data, not committed
+  data/processed/      Processed CSV inputs committed for reproducibility
   data_raw/            Local raw downloads, not committed
   results/             Main model outputs
   irrigation_results/  Irrigation study CSV outputs
@@ -162,7 +162,7 @@ CropCast/
   archive/             AGU 2025 version, kept unchanged
 ```
 
-Climate and vegetation are downloaded monthly first. The growing-season values are built afterward, so the season can be changed without downloading everything again.
+The committed processed CSVs are enough to rerun the reported checks. Climate and vegetation are downloaded monthly first when rebuilding from raw sources. The growing-season values are built afterward, so the season can be changed without downloading everything again.
 
 ---
 

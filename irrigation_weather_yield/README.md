@@ -4,6 +4,8 @@ This folder contains the tables, figures, references, and helper scripts for the
 
 The main analysis is run by `src/irrigation_contrast.py`. Its CSV outputs are in `irrigation_results/`. The scripts in this folder turn those CSV outputs into the tables and figures used to check and report the results.
 
+The paired irrigation analysis uses the committed processed CSVs in `data/processed/`. Raw download files are kept local in `data_raw/`.
+
 ## Files
 
 - `make_irrigation_tables.py` rebuilds the table CSVs and the short reproducibility summary.
