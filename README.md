@@ -162,7 +162,7 @@ CropCast/
   archive/             AGU 2025 version, kept unchanged
 ```
 
-The committed processed CSVs are enough to rerun the reported checks. Raw and processed data paths are set in `src/config.py`. Climate and vegetation are downloaded monthly first when rebuilding from raw sources. The growing-season values are built afterward, so the season can be changed without downloading everything again.
+The committed processed CSVs are enough to rerun the irrigation analysis and rebuild its reported tables and figures. The full yield-prediction pipeline needs the download steps below first. Raw and processed data paths are set in `src/config.py`. Climate and vegetation are downloaded monthly first when rebuilding from raw sources. The growing-season values are built afterward, so the season can be changed without downloading everything again.
 
 ---
 
@@ -186,13 +186,17 @@ python download_climate.py
 
 Run these one at a time. Earth Engine limits concurrent requests.
 
-To train and evaluate:
+After downloading fresh data, train and evaluate the full yield-prediction pipeline:
 ```bash
 python ml.py
 python evaluate.py --detrend none county
-python irrigation_contrast.py
 python paired_rerun.py
 python ablation.py
+```
+
+To rerun the irrigation analysis from the committed processed CSVs:
+```bash
+python irrigation_contrast.py
 ```
 
 To rebuild the irrigation study tables and figures from the repo root:
